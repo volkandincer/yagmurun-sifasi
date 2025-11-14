@@ -2,9 +2,6 @@ import { useState, useCallback, useMemo, useEffect, useRef, memo } from 'react';
 import { GameProps } from '../../interfaces/GameProps.interface';
 import styles from '../../styles/InfluenzaStep.module.css';
 
-const YOUTUBE_VIDEO_ID = 'NF09k1LU1wA'; // Barış Manço - Nane Limon Kabuğu
-const YOUTUBE_EMBED_URL = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0`;
-
 interface HealthTip {
   id: number;
   text: string;
@@ -20,45 +17,26 @@ const HEALTH_TIPS: HealthTip[] = [
 ];
 
 const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
-  // Eğer step zaten tamamlanmışsa direkt oyunu göster
-  const [showYouTube, setShowYouTube] = useState<boolean>(!step.completed);
+  // Direkt oyunu göster, YouTube yok
   const [currentTipIndex, setCurrentTipIndex] = useState<number>(0);
-  const [showGame, setShowGame] = useState<boolean>(step.completed);
+  const [showGame, setShowGame] = useState<boolean>(true);
 
-  // Step değiştiğinde state'leri sıfırla (sadece yeni step için)
+  // Step değiştiğinde state'leri sıfırla
   useEffect(() => {
-    if (!step.completed) {
-      setShowYouTube(true);
-      setCurrentTipIndex(0);
-      setShowGame(false);
-      setTextPosition({
-        x: Math.random() * 80 + 10,
-        y: Math.random() * 80 + 10,
-      });
-      setTextKey(0);
-      setClickCount(0);
-      setShowTryAgain(false);
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-    } else {
-      setShowYouTube(false);
-      setShowGame(true);
+    setCurrentTipIndex(0);
+    setShowGame(true);
+    setTextPosition({
+      x: Math.random() * 80 + 10,
+      y: Math.random() * 80 + 10,
+    });
+    setTextKey(0);
+    setClickCount(0);
+    setShowTryAgain(false);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
     }
-  }, [step.id, step.completed]);
-
-  const handleCloseYouTube = useCallback(() => {
-    setShowYouTube(false);
-    setTimeout(() => {
-      setShowGame(true);
-      // Oyun başladığında metin pozisyonunu ayarla
-      setTextPosition({
-        x: Math.random() * 80 + 10,
-        y: Math.random() * 80 + 10,
-      });
-    }, 500);
-  }, []);
+  }, [step.id]);
 
   // Rastgele başlangıç pozisyonu
   const [textPosition, setTextPosition] = useState<{ x: number; y: number }>(() => ({
@@ -168,30 +146,6 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
       }
     };
   }, []);
-
-  if (showYouTube) {
-    return (
-      <div className={styles.influenzaContainer}>
-        <div className={styles.youtubeOverlay} onClick={handleCloseYouTube}>
-          <div className={styles.youtubeModal} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.closeButton} onClick={handleCloseYouTube}>
-              ✕
-            </button>
-            <div className={styles.youtubeContainer}>
-              <iframe
-                className={styles.youtubeIframe}
-                src={YOUTUBE_EMBED_URL}
-                title="Barış Manço - Nane Limon Kabuğu"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   if (!showGame) {
     return null;

@@ -44,6 +44,7 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastType, setToastType] = useState<'error' | 'success' | 'info'>('error');
   const [showYouTube, setShowYouTube] = useState<boolean>(false);
+  const [showNextStepPopup, setShowNextStepPopup] = useState<boolean>(false);
 
   const handleTileClick = useCallback(
     (tileId: number) => {
@@ -142,6 +143,13 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
   const handleCloseYouTube = useCallback(() => {
     setShowYouTube(false);
     setTimeout(() => {
+      setShowNextStepPopup(true);
+    }, 300);
+  }, []);
+
+  const handleNextStep = useCallback(() => {
+    setShowNextStepPopup(false);
+    setTimeout(() => {
       onComplete();
     }, 300);
   }, [onComplete]);
@@ -223,6 +231,20 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
                 allowFullScreen
               />
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Next Step Popup */}
+      {showNextStepPopup && (
+        <div className={styles.popupOverlay} onClick={handleNextStep}>
+          <div className={styles.popupContent} onClick={(e) => e.stopPropagation()}>
+            <p className={styles.popupMessage}>
+              Bir sonraki adıma geçmek için hazır mısın? 🚀
+            </p>
+            <button className={styles.popupButton} onClick={handleNextStep}>
+              Diğer Stepe Geçelim →
+            </button>
           </div>
         </div>
       )}
