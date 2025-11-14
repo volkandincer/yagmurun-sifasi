@@ -10,7 +10,7 @@ const INITIAL_STEPS: Step[] = [
   {
     id: 1,
     title: "Hoş Geldin Yağmur! 💙",
-    description: "Senin için özel iyileşme rehberi hazırladım.",
+    description: "İyileşmeni dört gözle bekliyoruzzzzz",
     type: "message",
     content:
       "Biraz eğlenmeni istedim umarım keyfin yerine gelir. Her adımda karşına çıkacak sürprizlere gülümse...",
@@ -22,7 +22,7 @@ const INITIAL_STEPS: Step[] = [
     description: "Bu butona bas ve pozitif enerji topla!",
     type: "game",
     content:
-      "Aşağıdaki butona bas ve pozitif enerji topla! Her tıklamada daha güçlü olacaksın!",
+      "Aşağıdaki butona basıp ve pozitif enerji topluyoruz.! Her tıklamada daha güçlü olacaksın!",
     completed: false,
   },
   {
@@ -36,7 +36,7 @@ const INITIAL_STEPS: Step[] = [
   },
   {
     id: 4,
-    title: "Renkli Bulmaca 🎨",
+    title: "BMW 3.20 leri Bulmaca 🎨",
     description: "BMW 3.20 leri eşleştir ve puan kazan!",
     type: "puzzle",
     content:
@@ -149,16 +149,17 @@ function App() {
     <div className={styles.container}>
       <div className={styles.card}>
         <h1 className={styles.title}>Yağmur'un Şifası 💙</h1>
-        <ProgressBar progress={progress} />
+        {!allCompleted && <ProgressBar progress={progress} />}
         {!allCompleted ? (
           <StepComponent step={currentStep} onComplete={handleStepComplete} />
         ) : (
           <div className={styles.completionMessage}>
-            <h2>🎉 Harika İş Çıkardın Yağmur! 🎉</h2>
-            <p>Tüm adımları tamamladın! Sen gerçekten harika birisin!</p>
-            <button className={styles.restartButton} onClick={handleRestart}>
-              Tekrar Oyna
-            </button>
+            <ProgressBar progress={progress} />
+            <h2>🎉 Bomba gibiyiz dimiiiii 🎉</h2>
+            <p>
+              Tüm adımları tamamladığın için tebrikler! Sen gerçekten harika
+              birisin!
+            </p>
           </div>
         )}
       </div>

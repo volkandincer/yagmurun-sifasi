@@ -38,7 +38,7 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
     setShowTryAgain(false);
     setFailedAttempts(0);
     setShowScenarioMessage(false);
-    setElapsedTime(0);
+    setCountdown(15);
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
@@ -66,10 +66,10 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
   const [failedAttempts, setFailedAttempts] = useState<number>(0);
   const [showScenarioMessage, setShowScenarioMessage] =
     useState<boolean>(false);
-  const [elapsedTime, setElapsedTime] = useState<number>(0);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const moveIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [countdown, setCountdown] = useState<number>(15);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const moveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const handleTextClick = useCallback(() => {
     // Senaryo mesajı gösteriliyorsa tıklamayı engelle
@@ -150,11 +150,11 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
     if (!showGame || showScenarioMessage) return;
 
     intervalRef.current = setInterval(() => {
-      setElapsedTime((prev) => {
-        const newTime = prev + 1;
+      setCountdown((prev) => {
+        const newTime = prev - 1;
 
-        // 30 saniye sonra otomatik geçiş (iyileşme süreci tamamlandı)
-        if (newTime >= 30) {
+        // 0 saniyeye ulaştığında otomatik geçiş (iyileşme süreci tamamlandı)
+        if (newTime <= 0) {
           // Tüm interval'leri durdur
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
@@ -254,7 +254,7 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
         {/* Senaryo mesajı */}
         {showScenarioMessage && (
           <div className={styles.scenarioMessage}>
-            {elapsedTime < 30 ? (
+            {countdown > 0 ? (
               <>
                 <p className={styles.scenarioText}>
                   Daha çabuk iyileşmek için listedekileri yapıyoruz, sonra
@@ -279,13 +279,11 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
         {/* Zamanlayıcı gösterimi */}
         {!showScenarioMessage && (
           <div className={styles.timerDisplay}>
-            <p className={styles.timerText}>
-              İyileşme süreci: {elapsedTime} / 30 saniye
-            </p>
+            <p className={styles.timerText}>İyileşme süreci: {countdown} sn</p>
             <div className={styles.timerBar}>
               <div
                 className={styles.timerFill}
-                style={{ width: `${(elapsedTime / 30) * 100}%` }}
+                style={{ width: `${((15 - countdown) / 15) * 100}%` }}
               />
             </div>
           </div>

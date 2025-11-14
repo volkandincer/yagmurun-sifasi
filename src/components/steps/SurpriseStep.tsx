@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, useCallback } from 'react';
 import { GameProps } from '../../interfaces/GameProps.interface';
 import styles from '../../styles/SurpriseStep.module.css';
 
@@ -14,12 +14,10 @@ const SurpriseStep = memo(({ step, onComplete }: GameProps) => {
       color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
     }));
     setConfetti(confettiArray);
+  }, []);
 
-    const timer = setTimeout(() => {
-      onComplete();
-    }, 3000);
-
-    return () => clearTimeout(timer);
+  const handleComplete = useCallback(() => {
+    onComplete();
   }, [onComplete]);
 
   return (
@@ -41,6 +39,9 @@ const SurpriseStep = memo(({ step, onComplete }: GameProps) => {
         <h2 className={styles.surpriseTitle}>🎉 Tebrikler Yağmur! 🎉</h2>
         <p className={styles.surpriseText}>{step.content}</p>
         <div className={styles.heartAnimation}>💙</div>
+        <button className={styles.completeButton} onClick={handleComplete}>
+          Tamamlandı! 🎉
+        </button>
       </div>
     </div>
   );

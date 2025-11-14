@@ -53,13 +53,13 @@ const MessageStep = memo(({ step, onComplete }: GameProps) => {
               onClick={(e) => e.stopPropagation()}
             >
               <p className={styles.popupMessage}>
-                Evet ya da hayır farketmiyordu değil mi? Bir sonraki aşamaya
-                geçecektik 😄
+                Evet ya da hayır farketmiyordu ki... Bir sonraki aşamaya
+                geçebiliriz 😄
                 <br />
                 Zorlu bir oyun bu! 💪
               </p>
               <button className={styles.popupButton} onClick={handlePopupClose}>
-                Tamam, Devam Edelim! →
+                Devam mı →
               </button>
             </div>
           </div>

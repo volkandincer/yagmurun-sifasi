@@ -74,6 +74,7 @@
 .heartAnimation {
   font-size: 3rem;
   animation: pulse 1s ease infinite;
+  margin-bottom: 30px;
 }
 
 @keyframes pulse {
@@ -83,6 +84,39 @@
   }
   50% {
     transform: scale(1.2);
+  }
+}
+
+.completeButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  letter-spacing: 0.3px;
+  margin-top: 20px;
+}
+
+.completeButton:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+}
+
+.completeButton:active {
+  transform: translateY(-1px) scale(1);
+}
+
+@media (max-width: 768px) {
+  .completeButton {
+    padding: 12px 30px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 250px;
   }
 }
 
