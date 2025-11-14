@@ -35,3 +35,72 @@
   transform: translateY(0);
 }
 
+.confirmationQuestion {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #667eea;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.confirmationButtons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.confirmButtonRed,
+.confirmButtonGreen {
+  color: white;
+  border: none;
+  padding: 15px 50px;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s, box-shadow 0.2s;
+  min-width: 120px;
+}
+
+.confirmButtonRed {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.confirmButtonRed:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(231, 76, 60, 0.4);
+}
+
+.confirmButtonGreen {
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+}
+
+.confirmButtonGreen:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(39, 174, 96, 0.4);
+}
+
+.confirmButtonRed:active,
+.confirmButtonGreen:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .confirmationButtons {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .confirmButtonRed,
+  .confirmButtonGreen {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .confirmationQuestion {
+    font-size: 1.5rem;
+  }
+}
+

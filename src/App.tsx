@@ -3,6 +3,7 @@ import { Step } from './interfaces/Step.interface';
 import { StepProgress } from './interfaces/Step.interface';
 import ProgressBar from './components/ProgressBar';
 import StepComponent from './components/StepComponent';
+import Countdown from './components/Countdown';
 import styles from './styles/App.module.css';
 
 const INITIAL_STEPS: Step[] = [
@@ -51,6 +52,7 @@ const INITIAL_STEPS: Step[] = [
 function App() {
   const [steps, setSteps] = useState<Step[]>(INITIAL_STEPS);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [countdownCompleted, setCountdownCompleted] = useState<boolean>(false);
 
   const progress: StepProgress = useMemo(() => {
     const completedSteps = steps.filter((step) => step.completed).length;
@@ -88,6 +90,27 @@ function App() {
     [steps]
   );
 
+  const handleCountdownComplete = useCallback(() => {
+    setCountdownCompleted(true);
+  }, []);
+
+  const handleRestart = useCallback(() => {
+    setSteps(INITIAL_STEPS);
+    setCurrentStepIndex(0);
+    setCountdownCompleted(false);
+  }, []);
+
+  if (!countdownCompleted) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.card}>
+          <h1 className={styles.title}>Yağmur'un Şifası 💙</h1>
+          <Countdown onComplete={handleCountdownComplete} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -104,10 +127,7 @@ function App() {
             <p>Tüm adımları tamamladın! Sen gerçekten harika birisin!</p>
             <button
               className={styles.restartButton}
-              onClick={() => {
-                setSteps(INITIAL_STEPS);
-                setCurrentStepIndex(0);
-              }}
+              onClick={handleRestart}
             >
               Tekrar Oyna
             </button>
