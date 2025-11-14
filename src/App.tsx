@@ -1,50 +1,64 @@
-import { useState, useCallback, useMemo } from 'react';
-import { Step } from './interfaces/Step.interface';
-import { StepProgress } from './interfaces/Step.interface';
-import ProgressBar from './components/ProgressBar';
-import StepComponent from './components/StepComponent';
-import Countdown from './components/Countdown';
-import styles from './styles/App.module.css';
+import { useState, useCallback, useMemo } from "react";
+import { Step } from "./interfaces/Step.interface";
+import { StepProgress } from "./interfaces/Step.interface";
+import ProgressBar from "./components/ProgressBar";
+import StepComponent from "./components/StepComponent";
+import Countdown from "./components/Countdown";
+import styles from "./styles/App.module.css";
 
 const INITIAL_STEPS: Step[] = [
   {
     id: 1,
-    title: 'Hoş Geldin Yağmur! 💙',
-    description: 'Senin için özel bir yolculuk hazırladık',
-    type: 'message',
-    content: 'Merhaba Yağmur! Seni çok özledik ve senin için özel bir şeyler hazırladık. Her adımda seni gülümsetecek sürprizler var!',
+    title: "Hoş Geldin Yağmur! 💙",
+    description: "Senin için özel bir yolculuk hazırladım",
+    type: "message",
+    content:
+      "Biraz eğlenmeni istedim umarım keyfin yerine gelir. Her adımda karşına çıkacak sürprizlere gülümse...",
     completed: false,
   },
   {
     id: 2,
-    title: 'Pozitif Enerji Toplama 🌟',
-    description: 'Bu butona bas ve pozitif enerji topla!',
-    type: 'game',
-    content: 'Aşağıdaki butona bas ve pozitif enerji topla! Her tıklamada daha güçlü olacaksın!',
+    title: "Pozitif Enerji Toplama 🌟",
+    description: "Bu butona bas ve pozitif enerji topla!",
+    type: "game",
+    content:
+      "Aşağıdaki butona bas ve pozitif enerji topla! Her tıklamada daha güçlü olacaksın!",
     completed: false,
   },
   {
     id: 3,
-    title: 'Şifa Mesajları 💐',
-    description: 'Senin için özel mesajlar',
-    type: 'message',
-    content: 'Çok güçlüsün Yağmur! Bu zorlu günleri atlatacak ve daha güçlü olacaksın. Seni seven herkes yanında!',
+    title: "Şifa Mesajları 💐",
+    description: "Senin için özel mesajlar",
+    type: "message",
+    content:
+      "Çok güçlüsün Yağmur! Bu zorlu günleri atlatacak ve daha güçlü olacaksın. Seni seven herkes yanında!",
     completed: false,
   },
   {
     id: 4,
-    title: 'Renkli Bulmaca 🎨',
-    description: 'Renkleri eşleştir ve puan kazan!',
-    type: 'puzzle',
-    content: 'Renkleri eşleştirerek puan kazan! Her eşleşme seni bir adım daha ileri götürecek.',
+    title: "Renkli Bulmaca 🎨",
+    description: "Renkleri eşleştir ve puan kazan!",
+    type: "puzzle",
+    content:
+      "Renkleri eşleştirerek puan kazan! Her eşleşme seni bir adım daha ileri götürecek.",
     completed: false,
   },
   {
     id: 5,
-    title: 'Sürpriz Mesaj 🎁',
-    description: 'Son adımda özel bir sürpriz seni bekliyor!',
-    type: 'surprise',
-    content: 'Tebrikler Yağmur! Tüm adımları tamamladın! Sen harika birisin ve çok seviliyorsun. Hızlıca iyileşmen dileğiyle! 💙',
+    title: "Influenza İçin Öneriler 🤒",
+    description: "İyileşmek için yapman gerekenler",
+    type: "influenza",
+    content:
+      "Influenza olan birinin yapması gerekenler. Önce bir video izleyelim, sonra önerilere bakalım!",
+    completed: false,
+  },
+  {
+    id: 6,
+    title: "Sürpriz Mesaj 🎁",
+    description: "Son adımda özel bir sürpriz seni bekliyor!",
+    type: "surprise",
+    content:
+      "Tebrikler Yağmur! Tüm adımları tamamladın! Sen harika birisin ve çok seviliyorsun. Hızlıca iyileşmen dileğiyle! 💙",
     completed: false,
   },
 ];
@@ -117,18 +131,12 @@ function App() {
         <h1 className={styles.title}>Yağmur'un Şifası 💙</h1>
         <ProgressBar progress={progress} />
         {!allCompleted ? (
-          <StepComponent
-            step={currentStep}
-            onComplete={handleStepComplete}
-          />
+          <StepComponent step={currentStep} onComplete={handleStepComplete} />
         ) : (
           <div className={styles.completionMessage}>
             <h2>🎉 Harika İş Çıkardın Yağmur! 🎉</h2>
             <p>Tüm adımları tamamladın! Sen gerçekten harika birisin!</p>
-            <button
-              className={styles.restartButton}
-              onClick={handleRestart}
-            >
+            <button className={styles.restartButton} onClick={handleRestart}>
               Tekrar Oyna
             </button>
           </div>
@@ -139,4 +147,3 @@ function App() {
 }
 
 export default App;
-
