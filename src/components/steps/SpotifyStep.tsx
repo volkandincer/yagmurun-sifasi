@@ -2,9 +2,8 @@ import { memo, useCallback } from 'react';
 import { GameProps } from '../../interfaces/GameProps.interface';
 import styles from '../../styles/SpotifyStep.module.css';
 
-// Spotify playlist ID - kullanıcı playlist linkini buraya ekleyebilir
-// Örnek: https://open.spotify.com/playlist/37i9dQZF1DX... -> 37i9dQZF1DX...
-const SPOTIFY_PLAYLIST_ID = '37i9dQZF1DXcBWIGoYBM5M'; // Placeholder - gerçek playlist ID ile değiştirilmeli
+// Spotify playlist ID
+const SPOTIFY_PLAYLIST_ID = '7fqxqFfFub738YVHv50OaY';
 const SPOTIFY_EMBED_URL = `https://open.spotify.com/embed/playlist/${SPOTIFY_PLAYLIST_ID}?utm_source=generator&theme=0`;
 
 const SpotifyStep = memo(({ step, onComplete }: GameProps) => {

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, memo } from "react";
+import { useState, useCallback, memo } from "react";
 import { GameProps } from "../../interfaces/GameProps.interface";
 import { SARCASTIC_MESSAGES } from "../../interfaces/SarcasticMessage.interface";
 import styles from "../../styles/PuzzleStep.module.css";
@@ -47,6 +47,7 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
   );
   const [showYouTube, setShowYouTube] = useState<boolean>(false);
   const [showNextStepPopup, setShowNextStepPopup] = useState<boolean>(false);
+  const [showClickHint, setShowClickHint] = useState<boolean>(false);
 
   const handleTileClick = useCallback(
     (tileId: number) => {
@@ -58,6 +59,8 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
           setTiles((prev) =>
             prev.map((t) => (t.id === tileId ? { ...t, flipped: true } : t))
           );
+          // Tıklama ipucunu kapat
+          setShowClickHint(false);
           // YouTube iframe'ini göster
           setShowYouTube(true);
           return;
@@ -107,7 +110,7 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
           setMatches((prev) => {
             const newMatches = prev + 1;
             if (newMatches === CAR_IMAGES.length) {
-              // Son eşleşme - özel mesaj göster
+              // Son eşleşme - özel mesaj göster ve tıklama ipucunu göster
               setToastMessage(
                 "Biraz daha iyisin bence :D Şimdi son karta tıkla! 🎵"
               );
@@ -115,6 +118,8 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
               setTimeout(() => {
                 setToastMessage("");
               }, 3000);
+              // Bonus kart için tıklama ipucunu göster
+              setShowClickHint(true);
             }
             return newMatches;
           });
@@ -202,31 +207,41 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
         style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
       >
         {tiles.map((tile) => (
-          <button
-            key={tile.id}
-            className={`${styles.tile} ${tile.flipped ? styles.flipped : ""} ${
-              tile.matched ? styles.matched : ""
-            }`}
-            onClick={() => handleTileClick(tile.id)}
-            disabled={
-              tile.isBonus
-                ? matches < CAR_IMAGES.length || tile.flipped
-                : tile.matched || selectedTiles.length >= 2
-            }
-          >
-            {!tile.flipped && !tile.matched ? (
-              <span className={styles.questionMark}>?</span>
-            ) : tile.isBonus && tile.flipped ? (
-              <span className={styles.bonusEmoji}>🎵</span>
-            ) : (
-              <img
-                src={tile.imageUrl}
-                alt="BMW"
-                className={styles.tileImage}
-                loading="lazy"
-              />
-            )}
-          </button>
+          <div key={tile.id} className={styles.tileWrapper}>
+            <button
+              className={`${styles.tile} ${
+                tile.flipped ? styles.flipped : ""
+              } ${tile.matched ? styles.matched : ""}`}
+              onClick={() => handleTileClick(tile.id)}
+              disabled={
+                tile.isBonus
+                  ? matches < CAR_IMAGES.length || tile.flipped
+                  : tile.matched || selectedTiles.length >= 2
+              }
+            >
+              {!tile.flipped && !tile.matched ? (
+                <span className={styles.questionMark}>?</span>
+              ) : tile.isBonus && tile.flipped ? (
+                <span className={styles.bonusEmoji}>🎵</span>
+              ) : (
+                <img
+                  src={tile.imageUrl}
+                  alt="BMW"
+                  className={styles.tileImage}
+                  loading="lazy"
+                />
+              )}
+            </button>
+            {showClickHint &&
+              tile.isBonus &&
+              !tile.flipped &&
+              matches === CAR_IMAGES.length && (
+                <div className={styles.clickHint}>
+                  <div className={styles.clickHintArrow}>👇</div>
+                  <div className={styles.clickHintText}>sürprizzzz!!!!</div>
+                </div>
+              )}
+          </div>
         ))}
       </div>
 
@@ -262,7 +277,7 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
             onClick={(e) => e.stopPropagation()}
           >
             <p className={styles.popupMessage}>
-              Bir sonraki adıma geçmek için hazır mısın? 🚀
+              Nane Limon içilmeli ki kendini iyi hissedebilesin. 🚀
             </p>
             <button className={styles.popupButton} onClick={handleNextStep}>
               sıkılmadın dimi →

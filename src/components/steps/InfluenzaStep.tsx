@@ -1,6 +1,6 @@
-import { useState, useCallback, useMemo, useEffect, useRef, memo } from 'react';
-import { GameProps } from '../../interfaces/GameProps.interface';
-import styles from '../../styles/InfluenzaStep.module.css';
+import { useState, useCallback, useMemo, useEffect, useRef, memo } from "react";
+import { GameProps } from "../../interfaces/GameProps.interface";
+import styles from "../../styles/InfluenzaStep.module.css";
 
 interface HealthTip {
   id: number;
@@ -9,11 +9,15 @@ interface HealthTip {
 }
 
 const HEALTH_TIPS: HealthTip[] = [
-  { id: 1, text: 'Bol bol dinlen 💤', clickable: false },
-  { id: 2, text: 'Sıvı tüketimi artır 💧', clickable: false },
-  { id: 3, text: 'İlaçlarını zamanında al 💊', clickable: false },
-  { id: 4, text: 'Oda sıcaklığını ayarla 🌡️', clickable: false },
-  { id: 5, text: 'Sevdiklerinle konuş, moralini yüksek tut! 💙', clickable: true },
+  { id: 1, text: "Bol bol dinlen 💤", clickable: false },
+  { id: 2, text: "Sıvı tüketimi artır 💧", clickable: false },
+  { id: 3, text: "İlaçlarını zamanında al 💊", clickable: false },
+  { id: 4, text: "Oda sıcaklığını ayarla 🌡️", clickable: false },
+  {
+    id: 5,
+    text: "Sevdiklerinle konuş, moralini yüksek tut! 💙",
+    clickable: true,
+  },
 ];
 
 const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
@@ -50,15 +54,18 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
   }, [step.id]);
 
   // Rastgele başlangıç pozisyonu
-  const [textPosition, setTextPosition] = useState<{ x: number; y: number }>(() => ({
-    x: Math.random() * 80 + 10,
-    y: Math.random() * 80 + 10,
-  }));
+  const [textPosition, setTextPosition] = useState<{ x: number; y: number }>(
+    () => ({
+      x: Math.random() * 80 + 10,
+      y: Math.random() * 80 + 10,
+    })
+  );
   const [textKey, setTextKey] = useState<number>(0);
   const [clickCount, setClickCount] = useState<number>(0);
   const [showTryAgain, setShowTryAgain] = useState<boolean>(false);
   const [failedAttempts, setFailedAttempts] = useState<number>(0);
-  const [showScenarioMessage, setShowScenarioMessage] = useState<boolean>(false);
+  const [showScenarioMessage, setShowScenarioMessage] =
+    useState<boolean>(false);
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -67,11 +74,11 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
   const handleTextClick = useCallback(() => {
     // Senaryo mesajı gösteriliyorsa tıklamayı engelle
     if (showScenarioMessage) return;
-    
+
     // Hasta olduğun için tıklayamıyorsun - metin hemen kaçıyor
     setFailedAttempts((prev) => {
       const newFailed = prev + 1;
-      
+
       // 3 başarısız denemeden sonra senaryo mesajını göster (sadece bir kez)
       if (newFailed >= 3 && !showScenarioMessage) {
         // Metin hareketini durdur (mesaj gösterilirken)
@@ -79,7 +86,7 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
           clearInterval(moveIntervalRef.current);
           moveIntervalRef.current = null;
         }
-        
+
         setShowScenarioMessage(true);
         // 4 saniye sonra mesajı kapat (zamanlayıcı devam ediyor)
         timeoutRef.current = setTimeout(() => {
@@ -95,11 +102,11 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
           }
         }, 4000);
       }
-      
+
       return newFailed;
     });
     setClickCount(0);
-    
+
     // Metni çok hızlı kaçır (hasta olduğun için yakalayamıyorsun)
     const newX = Math.random() * 80 + 10;
     const newY = Math.random() * 80 + 10;
@@ -122,7 +129,7 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
   // Metin pozisyonunu sürekli değiştir (çok hızlı - hasta olduğun için yakalayamıyorsun)
   useEffect(() => {
     if (!showGame || showScenarioMessage) return;
-    
+
     moveIntervalRef.current = setInterval(() => {
       const newX = Math.random() * 80 + 10;
       const newY = Math.random() * 80 + 10;
@@ -145,7 +152,7 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
     intervalRef.current = setInterval(() => {
       setElapsedTime((prev) => {
         const newTime = prev + 1;
-        
+
         // 30 saniye sonra otomatik geçiş (iyileşme süreci tamamlandı)
         if (newTime >= 30) {
           // Tüm interval'leri durdur
@@ -161,10 +168,10 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
             clearTimeout(timeoutRef.current);
             timeoutRef.current = null;
           }
-          
+
           // Senaryo mesajı göster
           setShowScenarioMessage(true);
-          
+
           // 3 saniye sonra geçiş yap
           timeoutRef.current = setTimeout(() => {
             // Tüm interval'leri temizle
@@ -187,7 +194,7 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
             onComplete();
           }, 3000);
         }
-        
+
         return newTime;
       });
     }, 1000);
@@ -226,14 +233,14 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
           {HEALTH_TIPS.map((tip, index) => {
             const isActive = index === currentTipIndex;
             const isPast = index < currentTipIndex;
-            
+
             return (
               <button
                 key={tip.id}
                 className={`${styles.tipButton} ${
-                  isActive ? styles.active : ''
-                } ${isPast ? styles.past : ''} ${
-                  !tip.clickable ? styles.disabled : ''
+                  isActive ? styles.active : ""
+                } ${isPast ? styles.past : ""} ${
+                  !tip.clickable ? styles.disabled : ""
                 }`}
                 onClick={() => handleTipClick(tip)}
                 disabled={!tip.clickable || !isActive}
@@ -250,10 +257,12 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
             {elapsedTime < 30 ? (
               <>
                 <p className={styles.scenarioText}>
-                  Daha çabuk iyileşmek için buradakileri yapıyorsun, o yüzden geçemiyorsun bu aşamayı... 🤒
+                  Daha çabuk iyileşmek için listedekileri yapıyoruz, sonra
+                  geçiyoruz plisss... 🤒
                 </p>
                 <p className={styles.scenarioSubtext}>
-                  Hasta olduğun için tıklayamıyorsun. Biraz dinlen, iyileşme süreci devam ediyor... 💙
+                  Hasta olduğun için tıklayamıyorsun. Biraz dinlen, iyileşme
+                  süreci devam ediyor... 💙
                 </p>
               </>
             ) : (
@@ -274,7 +283,7 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
               İyileşme süreci: {elapsedTime} / 30 saniye
             </p>
             <div className={styles.timerBar}>
-              <div 
+              <div
                 className={styles.timerFill}
                 style={{ width: `${(elapsedTime / 30) * 100}%` }}
               />
@@ -284,7 +293,7 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
 
         {/* Hareketli metin */}
         {currentTip && !showScenarioMessage && (
-          <div 
+          <div
             key={`${currentTipIndex}-${textKey}`}
             className={styles.movingText}
             style={{
@@ -310,7 +319,6 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
   );
 });
 
-InfluenzaStep.displayName = 'InfluenzaStep';
+InfluenzaStep.displayName = "InfluenzaStep";
 
 export default InfluenzaStep;
-

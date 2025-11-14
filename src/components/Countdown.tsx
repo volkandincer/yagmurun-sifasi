@@ -65,9 +65,15 @@ const Countdown = memo(({ onComplete }: CountdownProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.countdown}>
-        <div className={styles.countdownNumber}>{count}</div>
-        <p className={styles.countdownText}>Saniye</p>
-        <p className={styles.motivationText}>{currentMotivationText}</p>
+        <div key={count} className={styles.countdownNumber}>
+          {count} sn
+        </div>
+        <p
+          key={`motivation-${currentTextIndex}`}
+          className={styles.motivationText}
+        >
+          {currentMotivationText}
+        </p>
       </div>
     </div>
   );

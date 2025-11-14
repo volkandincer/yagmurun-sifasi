@@ -10,7 +10,7 @@ const INITIAL_STEPS: Step[] = [
   {
     id: 1,
     title: "Hoş Geldin Yağmur! 💙",
-    description: "Senin için özel bir yolculuk hazırladım",
+    description: "Senin için özel iyileşme rehberi hazırladım.",
     type: "message",
     content:
       "Biraz eğlenmeni istedim umarım keyfin yerine gelir. Her adımda karşına çıkacak sürprizlere gülümse...",
@@ -37,7 +37,7 @@ const INITIAL_STEPS: Step[] = [
   {
     id: 4,
     title: "Renkli Bulmaca 🎨",
-    description: "Renkleri eşleştir ve puan kazan!",
+    description: "BMW 3.20 leri eşleştir ve puan kazan!",
     type: "puzzle",
     content:
       "Renkleri eşleştirerek puan kazan! Her eşleşme seni bir adım daha ileri götürecek.",
@@ -58,7 +58,7 @@ const INITIAL_STEPS: Step[] = [
     description: "Kahveni yap ve özel playlist'i dinle",
     type: "spotify",
     content:
-      "Kahveni yapıp bu özel şarkıları dinleyerek pinekle. Bu şarkılar senin için seçildi!",
+      "Kahveni yapıp bu özel şarkıları dinleyerek pinekliyorsun. Bahane istemiyoruzzzz. Bu şarkılar senin için seçildi!",
     completed: false,
   },
   {
@@ -67,7 +67,7 @@ const INITIAL_STEPS: Step[] = [
     description: "Son adımda özel bir sürpriz seni bekliyor!",
     type: "surprise",
     content:
-      "Tebrikler Yağmur! Tüm adımları tamamladın! Sen harika birisin ve çok seviliyorsun. Hızlıca iyileşmen dileğiyle! 💙",
+      "Sen harika birisin bazen gıcık olsan da... Hızlıca iyileşmen dileğiyle! 💙",
     completed: false,
   },
 ];
@@ -79,26 +79,37 @@ function App() {
 
   const progress: StepProgress = useMemo(() => {
     const completedSteps = steps.filter((step) => step.completed).length;
+    const allCompleted = steps.every((step) => step.completed);
     return {
       currentStep: currentStepIndex + 1,
       totalSteps: steps.length,
-      completedSteps,
+      // Tüm adımlar tamamlandıysa %100 göster
+      completedSteps: allCompleted ? steps.length : completedSteps,
     };
   }, [steps, currentStepIndex]);
 
   const handleStepComplete = useCallback(() => {
+    const currentIndex = currentStepIndex;
+
     setSteps((prevSteps) => {
       const newSteps = [...prevSteps];
-      newSteps[currentStepIndex] = {
-        ...newSteps[currentStepIndex],
+      newSteps[currentIndex] = {
+        ...newSteps[currentIndex],
         completed: true,
       };
       return newSteps;
     });
 
-    if (currentStepIndex < steps.length - 1) {
+    // Sonraki step'e geç (eğer son step değilse)
+    if (currentIndex < steps.length - 1) {
       setTimeout(() => {
-        setCurrentStepIndex((prev) => prev + 1);
+        setCurrentStepIndex((prev) => {
+          // Eğer prev hala currentIndex ise, bir sonraki step'e geç
+          if (prev === currentIndex) {
+            return prev + 1;
+          }
+          return prev;
+        });
       }, 1000);
     }
   }, [currentStepIndex, steps.length]);
