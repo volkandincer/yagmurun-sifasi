@@ -314,7 +314,7 @@
 
 .failedAttemptMessage {
   position: fixed;
-  bottom: 30px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(255, 107, 107, 0.95);
@@ -333,7 +333,7 @@
 
 @keyframes failedMessageSlide {
   from {
-    transform: translateX(-50%) translateY(50px);
+    transform: translateX(-50%) translateY(-50px);
     opacity: 0;
   }
   to {
@@ -418,7 +418,7 @@
   .failedAttemptMessage {
     font-size: 0.9rem;
     padding: 12px 20px;
-    bottom: 20px;
+    top: 15px;
   }
 }
 

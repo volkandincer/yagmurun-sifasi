@@ -47,7 +47,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  animation: toastSlideIn 0.3s ease-out, toastFadeOut 0.3s ease-in 2.2s forwards;
+  animation: toastSlideIn 0.3s ease-out, toastFadeOut 0.3s ease-in 3.7s forwards;
   max-width: 90%;
   text-align: center;
   pointer-events: none;

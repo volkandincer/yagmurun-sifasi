@@ -52,6 +52,38 @@
 .completionMessage {
   text-align: center;
   padding: 50px 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.confettiContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: -10px;
+  border-radius: 2px;
+  animation: confettiFall 3s linear infinite;
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
 }
 
 .completionMessage h2 {
@@ -96,6 +128,128 @@
   transform: translateY(-1px) scale(1);
 }
 
+.surpriseButton {
+  background: linear-gradient(135deg, #f093fb 0%, #764ba2 50%, #667eea 100%);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(240, 147, 251, 0.3);
+  letter-spacing: 0.3px;
+  margin-top: 20px;
+}
+
+.surpriseButton:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(240, 147, 251, 0.4);
+}
+
+.surpriseButton:active {
+  transform: translateY(-1px) scale(1);
+}
+
+.surprisePopupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.surprisePopupContent {
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+.closePopupButton {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  color: #666;
+  font-size: 1.5rem;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  z-index: 2001;
+}
+
+.closePopupButton:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.surpriseImageContainer {
+  position: relative;
+  width: 100%;
+  text-align: center;
+}
+
+.surpriseImage {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.surpriseImageText {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 15px;
@@ -126,6 +280,26 @@
   .restartButton {
     padding: 15px 35px;
     font-size: 1rem;
+  }
+
+  .surpriseButton {
+    padding: 12px 30px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .surprisePopupContent {
+    padding: 20px;
+    max-width: 95%;
+  }
+
+  .surpriseImageText {
+    font-size: 0.95rem;
+    padding: 10px 20px;
+    bottom: 15px;
+    white-space: normal;
+    max-width: 90%;
   }
 }
 

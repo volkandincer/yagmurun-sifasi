@@ -53,7 +53,7 @@ const MessageStep = memo(({ step, onComplete }: GameProps) => {
               onClick={(e) => e.stopPropagation()}
             >
               <p className={styles.popupMessage}>
-                Evet ya da hayır farketmiyordu ki... Bir sonraki aşamaya
+                Evet ya da hayır fark etmiyordu ki… Bir sonraki aşamaya
                 geçebiliriz 😄
                 <br />
                 Zorlu bir oyun bu! 💪

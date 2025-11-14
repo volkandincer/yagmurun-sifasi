@@ -1,10 +1,19 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { Step } from "./interfaces/Step.interface";
 import { StepProgress } from "./interfaces/Step.interface";
 import ProgressBar from "./components/ProgressBar";
 import StepComponent from "./components/StepComponent";
 import Countdown from "./components/Countdown";
 import styles from "./styles/App.module.css";
+
+const CONFETTI_COLORS = [
+  "#667eea",
+  "#764ba2",
+  "#f093fb",
+  "#4facfe",
+  "#43e97b",
+  "#fa709a",
+];
 
 const INITIAL_STEPS: Step[] = [
   {
@@ -76,6 +85,10 @@ function App() {
   const [steps, setSteps] = useState<Step[]>(INITIAL_STEPS);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [countdownCompleted, setCountdownCompleted] = useState<boolean>(false);
+  const [confetti, setConfetti] = useState<
+    Array<{ id: number; x: number; color: string }>
+  >([]);
+  const [showSurprisePopup, setShowSurprisePopup] = useState<boolean>(false);
 
   const progress: StepProgress = useMemo(() => {
     const completedSteps = steps.filter((step) => step.completed).length;
@@ -124,14 +137,32 @@ function App() {
     [steps]
   );
 
+  // Completion message gösterildiğinde konfetiler ekle
+  useEffect(() => {
+    if (allCompleted) {
+      const confettiArray = Array.from({ length: 50 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        color:
+          CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+      }));
+      setConfetti(confettiArray);
+    } else {
+      setConfetti([]);
+    }
+  }, [allCompleted]);
+
   const handleCountdownComplete = useCallback(() => {
     setCountdownCompleted(true);
   }, []);
 
-  const handleRestart = useCallback(() => {
-    setSteps(INITIAL_STEPS);
-    setCurrentStepIndex(0);
-    setCountdownCompleted(false);
+
+  const handleSurpriseClick = useCallback(() => {
+    setShowSurprisePopup(true);
+  }, []);
+
+  const handleCloseSurprisePopup = useCallback(() => {
+    setShowSurprisePopup(false);
   }, []);
 
   if (!countdownCompleted) {
@@ -153,14 +184,65 @@ function App() {
         {!allCompleted ? (
           <StepComponent step={currentStep} onComplete={handleStepComplete} />
         ) : (
-          <div className={styles.completionMessage}>
-            <ProgressBar progress={progress} />
-            <h2>🎉 Bomba gibiyiz dimiiiii 🎉</h2>
-            <p>
-              Tüm adımları tamamladığın için tebrikler! Sen gerçekten harika
-              birisin!
-            </p>
-          </div>
+          <>
+            <div className={styles.confettiContainer}>
+              {confetti.map((piece) => (
+                <div
+                  key={piece.id}
+                  className={styles.confetti}
+                  style={{
+                    left: `${piece.x}%`,
+                    backgroundColor: piece.color,
+                    animationDelay: `${piece.id * 0.1}s`,
+                  }}
+                />
+              ))}
+            </div>
+            <div className={styles.completionMessage}>
+              <ProgressBar progress={progress} />
+              <h2>🎉 Bomba gibiyiz dimiiiii 🎉</h2>
+              <p>
+                Tüm adımları tamamladığın için tebrikler! Sen gerçekten harika
+                birisin!
+              </p>
+              <button
+                className={styles.surpriseButton}
+                onClick={handleSurpriseClick}
+              >
+                Sürpriz 🎁
+              </button>
+            </div>
+
+            {/* Sürpriz Popup */}
+            {showSurprisePopup && (
+              <div
+                className={styles.surprisePopupOverlay}
+                onClick={handleCloseSurprisePopup}
+              >
+                <div
+                  className={styles.surprisePopupContent}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    className={styles.closePopupButton}
+                    onClick={handleCloseSurprisePopup}
+                  >
+                    ✕
+                  </button>
+                  <div className={styles.surpriseImageContainer}>
+                    <img
+                      src="https://www.gather.com.tr/wp-content/uploads/2025/03/Taylot-Nedir.jpg"
+                      alt="Sürpriz"
+                      className={styles.surpriseImage}
+                    />
+                    <p className={styles.surpriseImageText}>
+                      Severek içilen bir şey değil ki zaten
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

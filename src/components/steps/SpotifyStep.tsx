@@ -6,7 +6,7 @@ import styles from "../../styles/SpotifyStep.module.css";
 const SPOTIFY_PLAYLIST_ID = "7fqxqFfFub738YVHv50OaY";
 const SPOTIFY_EMBED_URL = `https://open.spotify.com/embed/playlist/${SPOTIFY_PLAYLIST_ID}?utm_source=generator&theme=0`;
 
-const SpotifyStep = memo(({ step, onComplete }: GameProps) => {
+const SpotifyStep = memo(({ onComplete }: GameProps) => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [hasSworn, setHasSworn] = useState<boolean>(false);

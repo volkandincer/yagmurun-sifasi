@@ -34,8 +34,6 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
       y: Math.random() * 80 + 10,
     });
     setTextKey(0);
-    setClickCount(0);
-    setShowTryAgain(false);
     setFailedAttempts(0);
     setShowScenarioMessage(false);
     setCountdown(15);
@@ -61,8 +59,6 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
     })
   );
   const [textKey, setTextKey] = useState<number>(0);
-  const [clickCount, setClickCount] = useState<number>(0);
-  const [showTryAgain, setShowTryAgain] = useState<boolean>(false);
   const [failedAttempts, setFailedAttempts] = useState<number>(0);
   const [showScenarioMessage, setShowScenarioMessage] =
     useState<boolean>(false);
@@ -105,17 +101,15 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
 
       return newFailed;
     });
-    setClickCount(0);
 
     // Metni çok hızlı kaçır (hasta olduğun için yakalayamıyorsun)
     const newX = Math.random() * 80 + 10;
     const newY = Math.random() * 80 + 10;
     setTextPosition({ x: newX, y: newY });
     setTextKey((prevKey) => prevKey + 1);
-    setShowTryAgain(false);
   }, [showScenarioMessage]);
 
-  const handleTipClick = useCallback((tip: HealthTip) => {
+  const handleTipClick = useCallback(() => {
     // Artık butonlarla geçiş yok, sadece zamanlayıcı ile geçiş var
     // Bu fonksiyon artık kullanılmıyor ama butonlar görsel olarak kalabilir
     return;
@@ -242,7 +236,7 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
                 } ${isPast ? styles.past : ""} ${
                   !tip.clickable ? styles.disabled : ""
                 }`}
-                onClick={() => handleTipClick(tip)}
+                onClick={handleTipClick}
                 disabled={!tip.clickable || !isActive}
               >
                 {tip.text}

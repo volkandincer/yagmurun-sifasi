@@ -69,7 +69,7 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
           setToastType("info");
           setTimeout(() => {
             setToastMessage("");
-          }, 2500);
+          }, 4000);
           return;
         }
       }
@@ -117,7 +117,7 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
               setToastType("success");
               setTimeout(() => {
                 setToastMessage("");
-              }, 3000);
+              }, 4500);
               // Bonus kart için tıklama ipucunu göster
               setShowClickHint(true);
             }
@@ -149,7 +149,7 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
 
           setTimeout(() => {
             setToastMessage("");
-          }, 2500);
+          }, 4000);
         }
       }
     },
