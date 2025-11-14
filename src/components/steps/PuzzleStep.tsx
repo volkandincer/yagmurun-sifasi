@@ -1,7 +1,7 @@
-import { useState, useCallback, useMemo, memo } from 'react';
-import { GameProps } from '../../interfaces/GameProps.interface';
-import { SARCASTIC_MESSAGES } from '../../interfaces/SarcasticMessage.interface';
-import styles from '../../styles/PuzzleStep.module.css';
+import { useState, useCallback, useMemo, memo } from "react";
+import { GameProps } from "../../interfaces/GameProps.interface";
+import { SARCASTIC_MESSAGES } from "../../interfaces/SarcasticMessage.interface";
+import styles from "../../styles/PuzzleStep.module.css";
 
 interface ImageTile {
   id: number;
@@ -13,14 +13,14 @@ interface ImageTile {
 
 // 3x3 grid için 4 çift (8 kart) + 1 bonus kart = 9 kart
 const CAR_IMAGES = [
-  'https://www.shutterstock.com/image-photo/seattle-washington-usa-march-31-600nw-2283283721.jpg',
-  'https://www.shutterstock.com/image-photo/kharkiv-ukraine-july-2021-bmw-600nw-2028637640.jpg',
-  'https://cdn.motor1.com/images/mgl/m6Pjq/s1/4x3/2019-bmw-3-series.webp',
-  'https://cdn.motor1.com/images/mgl/Lwbwj/s1/1x1/bmw-3-series-special-edition.webp'
+  "https://www.shutterstock.com/image-photo/seattle-washington-usa-march-31-600nw-2283283721.jpg",
+  "https://www.shutterstock.com/image-photo/kharkiv-ukraine-july-2021-bmw-600nw-2028637640.jpg",
+  "https://cdn.motor1.com/images/mgl/m6Pjq/s1/4x3/2019-bmw-3-series.webp",
+  "https://cdn.motor1.com/images/mgl/Lwbwj/s1/1x1/bmw-3-series-special-edition.webp",
 ];
 
-const BONUS_IMAGE = '🎵'; // Bonus kart için emoji
-const YOUTUBE_VIDEO_ID = 'NF09k1LU1wA'; // Barış Manço - Nane Limon Kabuğu
+const BONUS_IMAGE = "🎵"; // Bonus kart için emoji
+const YOUTUBE_VIDEO_ID = "NF09k1LU1wA"; // Barış Manço - Nane Limon Kabuğu
 const YOUTUBE_EMBED_URL = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0`;
 
 const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
@@ -41,15 +41,17 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
   const [selectedTiles, setSelectedTiles] = useState<number[]>([]);
   const [matches, setMatches] = useState(0);
   const [wrongAttempts, setWrongAttempts] = useState(0);
-  const [toastMessage, setToastMessage] = useState<string>('');
-  const [toastType, setToastType] = useState<'error' | 'success' | 'info'>('error');
+  const [toastMessage, setToastMessage] = useState<string>("");
+  const [toastType, setToastType] = useState<"error" | "success" | "info">(
+    "error"
+  );
   const [showYouTube, setShowYouTube] = useState<boolean>(false);
   const [showNextStepPopup, setShowNextStepPopup] = useState<boolean>(false);
 
   const handleTileClick = useCallback(
     (tileId: number) => {
       const tile = tiles[tileId];
-      
+
       // Bonus karta tıklandıysa ve tüm eşleşmeler tamamlandıysa
       if (tile.isBonus) {
         if (matches === CAR_IMAGES.length && !tile.flipped) {
@@ -60,16 +62,21 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
           setShowYouTube(true);
           return;
         } else if (matches < CAR_IMAGES.length) {
-          setToastMessage('Önce tüm eşleşmeleri tamamla! 🎯');
-          setToastType('info');
+          setToastMessage("Önce tüm eşleşmeleri tamamla! 🎯");
+          setToastType("info");
           setTimeout(() => {
-            setToastMessage('');
+            setToastMessage("");
           }, 2500);
           return;
         }
       }
 
-      if (tile.matched || tile.flipped || selectedTiles.length >= 2 || tile.isBonus) {
+      if (
+        tile.matched ||
+        tile.flipped ||
+        selectedTiles.length >= 2 ||
+        tile.isBonus
+      ) {
         return;
       }
 
@@ -85,7 +92,11 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
         const firstTile = tiles[firstId];
         const secondTile = tiles[secondId];
 
-        if (firstTile.imageUrl === secondTile.imageUrl && !firstTile.isBonus && !secondTile.isBonus) {
+        if (
+          firstTile.imageUrl === secondTile.imageUrl &&
+          !firstTile.isBonus &&
+          !secondTile.isBonus
+        ) {
           setTiles((prev) =>
             prev.map((t) =>
               t.id === firstId || t.id === secondId
@@ -97,10 +108,12 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
             const newMatches = prev + 1;
             if (newMatches === CAR_IMAGES.length) {
               // Son eşleşme - özel mesaj göster
-              setToastMessage('Biraz daha iyisin bence :D Şimdi son karta tıkla! 🎵');
-              setToastType('success');
+              setToastMessage(
+                "Biraz daha iyisin bence :D Şimdi son karta tıkla! 🎵"
+              );
+              setToastType("success");
               setTimeout(() => {
-                setToastMessage('');
+                setToastMessage("");
               }, 3000);
             }
             return newMatches;
@@ -110,13 +123,14 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
           // Yanlış eşleşme - toast mesaj göster
           const newWrongAttempts = wrongAttempts + 1;
           setWrongAttempts(newWrongAttempts);
-          
-          const randomMessage = SARCASTIC_MESSAGES[
-            Math.floor(Math.random() * SARCASTIC_MESSAGES.length)
-          ];
+
+          const randomMessage =
+            SARCASTIC_MESSAGES[
+              Math.floor(Math.random() * SARCASTIC_MESSAGES.length)
+            ];
           setToastMessage(randomMessage);
-          setToastType('error');
-          
+          setToastType("error");
+
           setTimeout(() => {
             setTiles((prev) =>
               prev.map((t) =>
@@ -127,9 +141,9 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
             );
             setSelectedTiles([]);
           }, 1500);
-          
+
           setTimeout(() => {
-            setToastMessage('');
+            setToastMessage("");
           }, 2500);
         }
       }
@@ -170,11 +184,13 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div 
+        <div
           className={`${styles.toast} ${
-            toastType === 'error' ? styles.toastError :
-            toastType === 'success' ? styles.toastSuccess :
-            styles.toastInfo
+            toastType === "error"
+              ? styles.toastError
+              : toastType === "success"
+              ? styles.toastSuccess
+              : styles.toastInfo
           }`}
         >
           {toastMessage}
@@ -188,12 +204,12 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
         {tiles.map((tile) => (
           <button
             key={tile.id}
-            className={`${styles.tile} ${tile.flipped ? styles.flipped : ''} ${
-              tile.matched ? styles.matched : ''
+            className={`${styles.tile} ${tile.flipped ? styles.flipped : ""} ${
+              tile.matched ? styles.matched : ""
             }`}
             onClick={() => handleTileClick(tile.id)}
             disabled={
-              tile.isBonus 
+              tile.isBonus
                 ? matches < CAR_IMAGES.length || tile.flipped
                 : tile.matched || selectedTiles.length >= 2
             }
@@ -203,9 +219,9 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
             ) : tile.isBonus && tile.flipped ? (
               <span className={styles.bonusEmoji}>🎵</span>
             ) : (
-              <img 
-                src={tile.imageUrl} 
-                alt="BMW" 
+              <img
+                src={tile.imageUrl}
+                alt="BMW"
                 className={styles.tileImage}
                 loading="lazy"
               />
@@ -217,7 +233,10 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
       {/* YouTube Modal */}
       {showYouTube && (
         <div className={styles.youtubeOverlay} onClick={handleCloseYouTube}>
-          <div className={styles.youtubeModal} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={styles.youtubeModal}
+            onClick={(e) => e.stopPropagation()}
+          >
             <button className={styles.closeButton} onClick={handleCloseYouTube}>
               ✕
             </button>
@@ -238,22 +257,23 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
       {/* Next Step Popup */}
       {showNextStepPopup && (
         <div className={styles.popupOverlay} onClick={handleNextStep}>
-          <div className={styles.popupContent} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={styles.popupContent}
+            onClick={(e) => e.stopPropagation()}
+          >
             <p className={styles.popupMessage}>
               Bir sonraki adıma geçmek için hazır mısın? 🚀
             </p>
             <button className={styles.popupButton} onClick={handleNextStep}>
-              Diğer Stepe Geçelim →
+              sıkılmadın dimi →
             </button>
           </div>
         </div>
       )}
-
     </div>
   );
 });
 
-PuzzleStep.displayName = 'PuzzleStep';
+PuzzleStep.displayName = "PuzzleStep";
 
 export default PuzzleStep;
-

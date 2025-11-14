@@ -45,8 +45,8 @@ const INITIAL_STEPS: Step[] = [
   },
   {
     id: 5,
-    title: "Influenza İçin Öneriler 🤒",
-    description: "İyileşmek için yapman gerekenler",
+    title: "İyileşmek için yapman gerekenler 🤒",
+    description: "mızmızlanmak yok :)",
     type: "influenza",
     content:
       "Influenza olan birinin yapması gerekenler. Önce bir video izleyelim, sonra önerilere bakalım!",
