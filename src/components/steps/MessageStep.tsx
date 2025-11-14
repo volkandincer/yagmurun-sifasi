@@ -1,6 +1,6 @@
-import { memo, useState } from 'react';
-import { GameProps } from '../../interfaces/GameProps.interface';
-import styles from '../../styles/MessageStep.module.css';
+import { memo, useState } from "react";
+import { GameProps } from "../../interfaces/GameProps.interface";
+import styles from "../../styles/MessageStep.module.css";
 
 const MessageStep = memo(({ step, onComplete }: GameProps) => {
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
@@ -40,10 +40,7 @@ const MessageStep = memo(({ step, onComplete }: GameProps) => {
           >
             Evet
           </button>
-          <button
-            className={styles.confirmButtonGreen}
-            onClick={handleNoClick}
-          >
+          <button className={styles.confirmButtonGreen} onClick={handleNoClick}>
             Hayır
           </button>
         </div>
@@ -51,9 +48,13 @@ const MessageStep = memo(({ step, onComplete }: GameProps) => {
         {/* Hayır Pop-up */}
         {showNoPopup && (
           <div className={styles.popupOverlay} onClick={handlePopupClose}>
-            <div className={styles.popupContent} onClick={(e) => e.stopPropagation()}>
+            <div
+              className={styles.popupContent}
+              onClick={(e) => e.stopPropagation()}
+            >
               <p className={styles.popupMessage}>
-                Hayır deseydin de bir sonraki aşamaya geçecektik 😄<br />
+                Hayır deseydin de bir sonraki aşamaya geçecektik 😄
+                <br />
                 Zorlu bir oyun bu! 💪
               </p>
               <button className={styles.popupButton} onClick={handlePopupClose}>
@@ -70,13 +71,12 @@ const MessageStep = memo(({ step, onComplete }: GameProps) => {
     <div className={styles.messageContainer}>
       <p className={styles.messageText}>{step.content}</p>
       <button className={styles.continueButton} onClick={handleContinueClick}>
-        Devam Et →
+        Devam Ediyoruzzz →
       </button>
     </div>
   );
 });
 
-MessageStep.displayName = 'MessageStep';
+MessageStep.displayName = "MessageStep";
 
 export default MessageStep;
-
