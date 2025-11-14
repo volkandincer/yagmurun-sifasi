@@ -54,6 +54,15 @@ const INITIAL_STEPS: Step[] = [
   },
   {
     id: 6,
+    title: "Kahve ve Müzik Zamanı ☕🎵",
+    description: "Kahveni yap ve özel playlist'i dinle",
+    type: "spotify",
+    content:
+      "Kahveni yapıp bu özel şarkıları dinleyerek pinekle. Bu şarkılar senin için seçildi!",
+    completed: false,
+  },
+  {
+    id: 7,
     title: "Sürpriz Mesaj 🎁",
     description: "Son adımda özel bir sürpriz seni bekliyor!",
     type: "surprise",

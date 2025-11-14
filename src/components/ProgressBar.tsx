@@ -7,7 +7,9 @@ interface ProgressBarProps {
 }
 
 const ProgressBar = memo(({ progress }: ProgressBarProps) => {
-  const percentage = (progress.completedSteps / progress.totalSteps) * 100;
+  // Progress: tamamlanan adımlar / toplam adım
+  // currentStep 1'den başladığı için (currentStep - 1) kullanıyoruz
+  const percentage = ((progress.currentStep - 1) / progress.totalSteps) * 100;
 
   return (
     <div className={styles.progressContainer}>

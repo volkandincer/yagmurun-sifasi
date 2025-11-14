@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect, memo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef, memo } from 'react';
 import { GameProps } from '../../interfaces/GameProps.interface';
 import styles from '../../styles/InfluenzaStep.module.css';
 
@@ -20,16 +20,117 @@ const HEALTH_TIPS: HealthTip[] = [
 ];
 
 const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
-  const [showYouTube, setShowYouTube] = useState<boolean>(true);
+  // Eğer step zaten tamamlanmışsa direkt oyunu göster
+  const [showYouTube, setShowYouTube] = useState<boolean>(!step.completed);
   const [currentTipIndex, setCurrentTipIndex] = useState<number>(0);
-  const [showGame, setShowGame] = useState<boolean>(false);
+  const [showGame, setShowGame] = useState<boolean>(step.completed);
+
+  // Step değiştiğinde state'leri sıfırla (sadece yeni step için)
+  useEffect(() => {
+    if (!step.completed) {
+      setShowYouTube(true);
+      setCurrentTipIndex(0);
+      setShowGame(false);
+      setTextPosition({
+        x: Math.random() * 80 + 10,
+        y: Math.random() * 80 + 10,
+      });
+      setTextKey(0);
+      setClickCount(0);
+      setShowTryAgain(false);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    } else {
+      setShowYouTube(false);
+      setShowGame(true);
+    }
+  }, [step.id, step.completed]);
 
   const handleCloseYouTube = useCallback(() => {
     setShowYouTube(false);
     setTimeout(() => {
       setShowGame(true);
+      // Oyun başladığında metin pozisyonunu ayarla
+      setTextPosition({
+        x: Math.random() * 80 + 10,
+        y: Math.random() * 80 + 10,
+      });
     }, 500);
   }, []);
+
+  // Rastgele başlangıç pozisyonu
+  const [textPosition, setTextPosition] = useState<{ x: number; y: number }>(() => ({
+    x: Math.random() * 80 + 10,
+    y: Math.random() * 80 + 10,
+  }));
+  const [textKey, setTextKey] = useState<number>(0);
+  const [clickCount, setClickCount] = useState<number>(0);
+  const [showTryAgain, setShowTryAgain] = useState<boolean>(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleTextClick = useCallback(() => {
+    setClickCount((prev) => {
+      const newClickCount = prev + 1;
+
+      // Timeout'u temizle
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
+      if (newClickCount < 3) {
+        // Henüz 3 kere tıklanmadı, metni kaçır
+        const newX = Math.random() * 80 + 10;
+        const newY = Math.random() * 80 + 10;
+        setTextPosition({ x: newX, y: newY });
+        setTextKey((prevKey) => prevKey + 1);
+        setShowTryAgain(false);
+
+        // 5 saniye içinde 3. tıklama yapılmazsa "bi daha dene" göster
+        timeoutRef.current = setTimeout(() => {
+          setShowTryAgain(true);
+          setClickCount(0);
+          // Metni yeni bir yere taşı
+          setTextPosition({
+            x: Math.random() * 80 + 10,
+            y: Math.random() * 80 + 10,
+          });
+          setTextKey((prevKey) => prevKey + 1);
+        }, 5000);
+      } else {
+        // 3. tıklama - yakalandı!
+        setShowTryAgain(false);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
+
+        // Listedeki bir sonraki adıma geç
+        setCurrentTipIndex((prevIndex) => {
+          if (prevIndex < HEALTH_TIPS.length - 1) {
+            return prevIndex + 1;
+          } else {
+            // Son adıma ulaşıldığında bir sonraki step'e geç
+            setTimeout(() => {
+              onComplete();
+            }, 500);
+            return prevIndex;
+          }
+        });
+
+        // Yeni metin için pozisyon ayarla
+        setTextPosition({
+          x: Math.random() * 80 + 10,
+          y: Math.random() * 80 + 10,
+        });
+        setTextKey((prevKey) => prevKey + 1);
+      }
+
+      return newClickCount;
+    });
+  }, [onComplete]);
 
   const handleTipClick = useCallback((tip: HealthTip) => {
     if (!tip.clickable) return;
@@ -45,21 +146,28 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
     [currentTipIndex]
   );
 
-  // Otomatik olarak bir sonraki tipe geç (3 saniyede bir)
+  // Metin pozisyonunu rastgele değiştir (sürekli hareket) - sadece tıklama yoksa
   useEffect(() => {
-    if (!showGame) return;
+    if (!showGame || clickCount > 0) return;
     
     const interval = setInterval(() => {
-      setCurrentTipIndex((prev) => {
-        if (prev < HEALTH_TIPS.length - 1) {
-          return prev + 1;
-        }
-        return prev;
-      });
-    }, 3000);
+      const newX = Math.random() * 80 + 10; // 10-90% arası
+      const newY = Math.random() * 80 + 10; // 10-90% arası
+      setTextPosition({ x: newX, y: newY });
+      setTextKey((prev) => prev + 1);
+    }, 4000); // 4 saniyede bir pozisyon değişsin
 
     return () => clearInterval(interval);
-  }, [showGame]);
+  }, [showGame, clickCount]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   if (showYouTube) {
     return (
@@ -92,8 +200,6 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
   return (
     <div className={styles.influenzaContainer}>
       <div className={styles.gameContainer}>
-        <h3 className={styles.gameTitle}>Influenza Olan Birinin Yapması Gerekenler</h3>
-        
         <div className={styles.tipsContainer}>
           {HEALTH_TIPS.map((tip, index) => {
             const isActive = index === currentTipIndex;
@@ -118,12 +224,27 @@ const InfluenzaStep = memo(({ step, onComplete }: GameProps) => {
 
         {/* Hareketli metin */}
         {currentTip && (
-          <div 
-            key={currentTipIndex}
-            className={styles.movingText}
-          >
-            {currentTip.text}
-          </div>
+          <>
+            <div 
+              key={`${currentTipIndex}-${textKey}`}
+              className={styles.movingText}
+              style={{
+                left: `${textPosition.x}%`,
+                top: `${textPosition.y}%`,
+              }}
+              onClick={handleTextClick}
+            >
+              {currentTip.text}
+              {clickCount > 0 && clickCount < 3 && (
+                <span className={styles.clickCounter}>{clickCount}/3</span>
+              )}
+            </div>
+            {showTryAgain && (
+              <div className={styles.tryAgainMessage}>
+                Bi daha dene! 😊
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

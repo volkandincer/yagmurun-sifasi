@@ -41,7 +41,8 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
   const [selectedTiles, setSelectedTiles] = useState<number[]>([]);
   const [matches, setMatches] = useState(0);
   const [wrongAttempts, setWrongAttempts] = useState(0);
-  const [sarcasticMessage, setSarcasticMessage] = useState<string>('');
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastType, setToastType] = useState<'error' | 'success' | 'info'>('error');
   const [showYouTube, setShowYouTube] = useState<boolean>(false);
 
   const handleTileClick = useCallback(
@@ -58,10 +59,11 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
           setShowYouTube(true);
           return;
         } else if (matches < CAR_IMAGES.length) {
-          setSarcasticMessage('Önce tüm eşleşmeleri tamamla! 🎯');
+          setToastMessage('Önce tüm eşleşmeleri tamamla! 🎯');
+          setToastType('info');
           setTimeout(() => {
-            setSarcasticMessage('');
-          }, 1500);
+            setToastMessage('');
+          }, 2500);
           return;
         }
       }
@@ -94,24 +96,25 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
             const newMatches = prev + 1;
             if (newMatches === CAR_IMAGES.length) {
               // Son eşleşme - özel mesaj göster
-              setSarcasticMessage('Biraz daha iyisin bence :D Şimdi son karta tıkla! 🎵');
+              setToastMessage('Biraz daha iyisin bence :D Şimdi son karta tıkla! 🎵');
+              setToastType('success');
+              setTimeout(() => {
+                setToastMessage('');
+              }, 3000);
             }
             return newMatches;
           });
           setSelectedTiles([]);
-          // Son eşleşme değilse mesajı temizle
-          if (matches + 1 < CAR_IMAGES.length) {
-            setSarcasticMessage('');
-          }
         } else {
-          // Yanlış eşleşme - alaycı mesaj göster
+          // Yanlış eşleşme - toast mesaj göster
           const newWrongAttempts = wrongAttempts + 1;
           setWrongAttempts(newWrongAttempts);
           
           const randomMessage = SARCASTIC_MESSAGES[
             Math.floor(Math.random() * SARCASTIC_MESSAGES.length)
           ];
-          setSarcasticMessage(randomMessage);
+          setToastMessage(randomMessage);
+          setToastType('error');
           
           setTimeout(() => {
             setTiles((prev) =>
@@ -122,10 +125,11 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
               )
             );
             setSelectedTiles([]);
-            setTimeout(() => {
-              setSarcasticMessage(''); // Mesajı 1.5 saniye sonra temizle
-            }, 500);
           }, 1500);
+          
+          setTimeout(() => {
+            setToastMessage('');
+          }, 2500);
         }
       }
     },
@@ -155,14 +159,17 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
           </div>
         )}
       </div>
-      
-      {/* Alaycı Mesaj / Başarı Mesajı */}
-      {sarcasticMessage && (
+
+      {/* Toast Notification */}
+      {toastMessage && (
         <div 
-          className={styles.sarcasticMessage}
-          data-success={sarcasticMessage.includes('Biraz daha iyisin') ? 'true' : 'false'}
+          className={`${styles.toast} ${
+            toastType === 'error' ? styles.toastError :
+            toastType === 'success' ? styles.toastSuccess :
+            styles.toastInfo
+          }`}
         >
-          {sarcasticMessage}
+          {toastMessage}
         </div>
       )}
 

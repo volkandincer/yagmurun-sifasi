@@ -6,6 +6,7 @@ import GameStep from './steps/GameStep';
 import PuzzleStep from './steps/PuzzleStep';
 import SurpriseStep from './steps/SurpriseStep';
 import InfluenzaStep from './steps/InfluenzaStep';
+import SpotifyStep from './steps/SpotifyStep';
 import styles from '../styles/StepComponent.module.css';
 
 interface StepComponentProps {
@@ -31,6 +32,8 @@ const StepComponent = memo(({ step, onComplete }: StepComponentProps) => {
         return <SurpriseStep {...stepProps} />;
       case 'influenza':
         return <InfluenzaStep {...stepProps} />;
+      case 'spotify':
+        return <SpotifyStep {...stepProps} />;
       default:
         return <MessageStep {...stepProps} />;
     }

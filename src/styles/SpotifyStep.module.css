@@ -1,0 +1,115 @@
+.spotifyContainer {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.messageSection {
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.messageTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 20px;
+  line-height: 1.3;
+}
+
+.messageText {
+  font-size: 1.15rem;
+  color: #555;
+  line-height: 1.8;
+  font-weight: 500;
+  padding: 0 10px;
+}
+
+.spotifyPlayer {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  background: #1a1a1a;
+  padding: 8px;
+}
+
+.spotifyIframe {
+  width: 100%;
+  height: 352px;
+  border-radius: 12px;
+  border: none;
+}
+
+.continueSection {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.continueButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  color: white;
+  border: none;
+  padding: 18px 45px;
+  font-size: 1.15rem;
+  border-radius: 35px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  letter-spacing: 0.3px;
+}
+
+.continueButton:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+}
+
+.continueButton:active {
+  transform: translateY(-1px) scale(1);
+}
+
+@media (max-width: 768px) {
+  .spotifyContainer {
+    padding: 15px;
+    gap: 25px;
+  }
+
+  .messageTitle {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+  }
+
+  .messageText {
+    font-size: 1rem;
+    padding: 0;
+  }
+
+  .spotifyPlayer {
+    border-radius: 15px;
+    padding: 6px;
+  }
+
+  .spotifyIframe {
+    height: 300px;
+    border-radius: 10px;
+  }
+
+  .continueButton {
+    padding: 15px 35px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
