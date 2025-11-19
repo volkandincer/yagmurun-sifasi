@@ -106,7 +106,7 @@ const PuzzleStep = memo(({ onComplete }: GameProps) => {
 
                 return updatedTiles;
               } else {
-                // Yanlış eşleşme - toast mesaj göster ve kartları karıştır
+                // Yanlış eşleşme - toast mesaj göster ve kartları kapat
                 setWrongAttempts((prev) => prev + 1);
 
                 const randomMessage =
@@ -117,26 +117,13 @@ const PuzzleStep = memo(({ onComplete }: GameProps) => {
                 setToastType("error");
 
                 setTimeout(() => {
-                  setTiles((tilesToShuffle) => {
-                    // Önce yanlış seçilen kartları kapat
-                    const closedTiles = tilesToShuffle.map((t) =>
+                  setTiles((currentTiles) => {
+                    // Yanlış seçilen kartları kapat (yerlerini değiştirme)
+                    return currentTiles.map((t) =>
                       t.id === firstId || t.id === secondId
                         ? { ...t, flipped: false }
                         : t
                     );
-
-                    // Eşleşmiş kartları ayır
-                    const matchedTiles = closedTiles.filter((t) => t.matched);
-                    const unmatchedTiles = closedTiles.filter(
-                      (t) => !t.matched
-                    );
-
-                    // Eşleşmemiş kartları karıştır
-                    const shuffledUnmatched = [...unmatchedTiles].sort(
-                      () => Math.random() - 0.5
-                    );
-
-                    return [...matchedTiles, ...shuffledUnmatched];
                   });
                 }, 1500);
 
