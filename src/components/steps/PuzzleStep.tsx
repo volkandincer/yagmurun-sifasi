@@ -38,115 +38,126 @@ const PuzzleStep = memo(({ onComplete }: GameProps) => {
 
   const handleTileClick = useCallback(
     (tileId: number) => {
-      const tile = tiles[tileId];
+      setTiles((prevTiles) => {
+        const tile = prevTiles.find((t) => t.id === tileId);
+        if (!tile || tile.matched || tile.flipped) {
+          return prevTiles;
+        }
 
-      if (tile.matched || tile.flipped || selectedTiles.length >= 2) {
-        return;
-      }
-
-      setTiles((prev) => {
-        const updatedTiles = prev.map((t) =>
+        return prevTiles.map((t) =>
           t.id === tileId ? { ...t, flipped: true } : t
         );
-        const newSelected = [...selectedTiles, tileId];
+      });
 
+      setSelectedTiles((prevSelected) => {
+        // Eğer zaten 2 kart seçiliyse, yeni seçim yapma
+        if (prevSelected.length >= 2) {
+          return prevSelected;
+        }
+
+        const newSelected = [...prevSelected, tileId];
+
+        // Eğer 2 kart seçildiyse, eşleşme kontrolü yap
         if (newSelected.length === 2) {
-          const [firstId, secondId] = newSelected;
-          const firstTile = updatedTiles.find((t) => t.id === firstId);
-          const secondTile = updatedTiles.find((t) => t.id === secondId);
+          setTimeout(() => {
+            setTiles((currentTiles) => {
+              const [firstId, secondId] = newSelected;
+              const firstTile = currentTiles.find((t) => t.id === firstId);
+              const secondTile = currentTiles.find((t) => t.id === secondId);
 
-          if (
-            firstTile &&
-            secondTile &&
-            firstTile.placeName === secondTile.placeName
-          ) {
-            // Doğru eşleşme - state'i güncelle
-            setTimeout(() => {
-              setTiles((currentTiles) =>
-                currentTiles.map((t) =>
+              if (
+                firstTile &&
+                secondTile &&
+                firstTile.placeName === secondTile.placeName
+              ) {
+                // Doğru eşleşme
+                const updatedTiles = currentTiles.map((t) =>
                   t.id === firstId || t.id === secondId
                     ? { ...t, matched: true, flipped: true }
                     : t
-                )
-              );
-              setMatches((prev) => {
-                const newMatches = prev + 1;
-                if (newMatches === PLACES.length) {
-                  // Tüm eşleşmeler tamamlandı - veriyi kaydet
-                  const completionTime = Date.now() - startTimeRef.current;
-                  savePuzzleResult({
-                    matches: newMatches,
-                    wrong_attempts: wrongAttempts,
-                    completion_time: Math.round(completionTime / 1000), // saniye cinsinden
-                  });
+                );
 
-                  setToastMessage("Harika! Tüm mekanları eşleştirdin! 🎉");
-                  setToastType("success");
-                  setTimeout(() => {
-                    setToastMessage("");
-                    onComplete();
-                  }, 2000);
-                } else {
-                  setToastMessage("Doğru eşleşme! 🎯");
-                  setToastType("success");
-                  setTimeout(() => {
-                    setToastMessage("");
-                  }, 2000);
-                }
-                return newMatches;
-              });
+                setMatches((prev) => {
+                  const newMatches = prev + 1;
+                  if (newMatches === PLACES.length) {
+                    // Tüm eşleşmeler tamamlandı - veriyi kaydet
+                    const completionTime = Date.now() - startTimeRef.current;
+                    savePuzzleResult({
+                      matches: newMatches,
+                      wrong_attempts: wrongAttempts,
+                      completion_time: Math.round(completionTime / 1000),
+                    });
+
+                    setToastMessage("Harika! Tüm mekanları eşleştirdin! 🎉");
+                    setToastType("success");
+                    setTimeout(() => {
+                      setToastMessage("");
+                      onComplete();
+                    }, 2000);
+                  } else {
+                    setToastMessage("Doğru eşleşme! 🎯");
+                    setToastType("success");
+                    setTimeout(() => {
+                      setToastMessage("");
+                    }, 2000);
+                  }
+                  return newMatches;
+                });
+
+                return updatedTiles;
+              } else {
+                // Yanlış eşleşme - toast mesaj göster ve kartları karıştır
+                setWrongAttempts((prev) => prev + 1);
+
+                const randomMessage =
+                  SARCASTIC_MESSAGES[
+                    Math.floor(Math.random() * SARCASTIC_MESSAGES.length)
+                  ];
+                setToastMessage(randomMessage);
+                setToastType("error");
+
+                setTimeout(() => {
+                  setTiles((tilesToShuffle) => {
+                    // Önce yanlış seçilen kartları kapat
+                    const closedTiles = tilesToShuffle.map((t) =>
+                      t.id === firstId || t.id === secondId
+                        ? { ...t, flipped: false }
+                        : t
+                    );
+
+                    // Eşleşmiş kartları ayır
+                    const matchedTiles = closedTiles.filter((t) => t.matched);
+                    const unmatchedTiles = closedTiles.filter(
+                      (t) => !t.matched
+                    );
+
+                    // Eşleşmemiş kartları karıştır
+                    const shuffledUnmatched = [...unmatchedTiles].sort(
+                      () => Math.random() - 0.5
+                    );
+
+                    return [...matchedTiles, ...shuffledUnmatched];
+                  });
+                }, 1500);
+
+                setTimeout(() => {
+                  setToastMessage("");
+                }, 4000);
+
+                return currentTiles;
+              }
+            });
+
+            setTimeout(() => {
               setSelectedTiles([]);
             }, 100);
-          } else {
-            // Yanlış eşleşme - toast mesaj göster ve kartları karıştır
-            const newWrongAttempts = wrongAttempts + 1;
-            setWrongAttempts(newWrongAttempts);
-
-            const randomMessage =
-              SARCASTIC_MESSAGES[
-                Math.floor(Math.random() * SARCASTIC_MESSAGES.length)
-              ];
-            setToastMessage(randomMessage);
-            setToastType("error");
-
-            setTimeout(() => {
-              setTiles((currentTiles) => {
-                // Önce yanlış seçilen kartları kapat
-                const closedTiles = currentTiles.map((t) =>
-                  t.id === firstId || t.id === secondId
-                    ? { ...t, flipped: false }
-                    : t
-                );
-
-                // Eşleşmiş kartları ayır
-                const matchedTiles = closedTiles.filter((t) => t.matched);
-                const unmatchedTiles = closedTiles.filter((t) => !t.matched);
-
-                // Eşleşmemiş kartları karıştır (ID'leri koru, sadece array içindeki sıralamayı değiştir)
-                const shuffledUnmatched = [...unmatchedTiles].sort(
-                  () => Math.random() - 0.5
-                );
-
-                // Eşleşmiş kartları başa, karıştırılmış eşleşmemiş kartları sona ekle
-                return [...matchedTiles, ...shuffledUnmatched];
-              });
-              setSelectedTiles([]);
-            }, 1500);
-
-            setTimeout(() => {
-              setToastMessage("");
-            }, 4000);
-          }
-
-          setSelectedTiles(newSelected);
-        } else {
-          setSelectedTiles(newSelected);
+          }, 100);
         }
 
-        return updatedTiles;
+        return newSelected;
       });
     },
-    [selectedTiles, wrongAttempts, onComplete]
+    [wrongAttempts, onComplete]
   );
 
   // 2x4 grid için (8 kart)
