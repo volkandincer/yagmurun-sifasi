@@ -168,23 +168,6 @@ function App() {
     });
   }, []);
 
-  const handleSkipCurrentStep = useCallback(() => {
-    const currentIndex = currentStepIndex;
-
-    setSteps((prevSteps) => {
-      const newSteps = [...prevSteps];
-      newSteps[currentIndex] = {
-        ...newSteps[currentIndex],
-        completed: true,
-      };
-      return newSteps;
-    });
-
-    if (currentIndex < steps.length - 1) {
-      setCurrentStepIndex(currentIndex + 1);
-    }
-  }, [currentStepIndex, steps.length]);
-
   if (!countdownCompleted) {
     return (
       <div className={styles.container}>
@@ -200,16 +183,6 @@ function App() {
     <div className={styles.container}>
       <div className={styles.card}>
         <h1 className={styles.title}>Yağmur'un Şifası 💙</h1>
-        {!allCompleted && (
-          <button
-            className={styles.skipButton}
-            onClick={handleSkipCurrentStep}
-            type="button"
-            title="Bu adımı atla (Test için)"
-          >
-            ⏭️ Adımı Atla
-          </button>
-        )}
         {!allCompleted && <ProgressBar progress={progress} />}
         {!allCompleted ? (
           <StepComponent step={currentStep} onComplete={handleStepComplete} />
