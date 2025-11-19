@@ -7,6 +7,12 @@ import PuzzleStep from './steps/PuzzleStep';
 import SurpriseStep from './steps/SurpriseStep';
 import InfluenzaStep from './steps/InfluenzaStep';
 import SpotifyStep from './steps/SpotifyStep';
+import MeetingStep from './steps/MeetingStep';
+import ChatStep from './steps/ChatStep';
+import RecoveryStep from './steps/RecoveryStep';
+import MoviesStep from './steps/MoviesStep';
+import MemoriesStep from './steps/MemoriesStep';
+import VoiceStep from './steps/VoiceStep';
 import styles from '../styles/StepComponent.module.css';
 
 interface StepComponentProps {
@@ -34,6 +40,18 @@ const StepComponent = memo(({ step, onComplete }: StepComponentProps) => {
         return <InfluenzaStep {...stepProps} />;
       case 'spotify':
         return <SpotifyStep {...stepProps} />;
+      case 'meeting':
+        return <MeetingStep {...stepProps} />;
+      case 'chat':
+        return <ChatStep {...stepProps} />;
+      case 'recovery':
+        return <RecoveryStep {...stepProps} />;
+      case 'movies':
+        return <MoviesStep {...stepProps} />;
+      case 'memories':
+        return <MemoriesStep {...stepProps} />;
+      case 'voice':
+        return <VoiceStep {...stepProps} />;
       default:
         return <MessageStep {...stepProps} />;
     }

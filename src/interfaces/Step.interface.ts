@@ -2,7 +2,7 @@ export interface Step {
   id: number;
   title: string;
   description: string;
-  type: 'message' | 'game' | 'puzzle' | 'surprise' | 'influenza' | 'spotify';
+  type: 'message' | 'game' | 'puzzle' | 'surprise' | 'influenza' | 'spotify' | 'meeting' | 'chat' | 'recovery' | 'movies' | 'memories' | 'voice';
   content: string;
   completed: boolean;
 }

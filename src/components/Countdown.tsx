@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { CountdownProps } from "../interfaces/Countdown.interface";
 import styles from "../styles/Countdown.module.css";
 
-const COUNTDOWN_DURATION = 10;
+const COUNTDOWN_DURATION = 1;
 
 const MOTIVATION_TEXTS: readonly string[] = [
   "Sen çok güçlüsün! 💪",

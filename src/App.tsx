@@ -63,6 +63,15 @@ const INITIAL_STEPS: Step[] = [
   },
   {
     id: 6,
+    title: "İyileşme Takibi 📊",
+    description: "Bugün nasıl hissediyorsun?",
+    type: "recovery",
+    content:
+      "İyileşme sürecini takip edelim. Bugün nasıl hissediyorsun? Koku, tat ve öksürük durumunu paylaş 💙",
+    completed: false,
+  },
+  {
+    id: 7,
     title: "Kahve ve Müzik Zamanı ☕🎵",
     description: "Kahveni yap ve özel playlist'i dinle",
     type: "spotify",
@@ -71,7 +80,52 @@ const INITIAL_STEPS: Step[] = [
     completed: false,
   },
   {
-    id: 7,
+    id: 8,
+    title: "Günlük Sohbet 💬",
+    description: "Birlikte sohbet edelim",
+    type: "chat",
+    content:
+      "Birlikte sohbet edelim. Nasılsın, neler hissediyorsun? Seni dinlemek istiyorum 💙",
+    completed: false,
+  },
+  {
+    id: 9,
+    title: "Sesli Mesaj 🎤",
+    description: "Öksürüğün varsa sesli mesaj gönder",
+    type: "voice",
+    content:
+      "Öksürüğün varsa yazmak zor olabilir. Burada sesli mesaj gönderebilirsin 💙",
+    completed: false,
+  },
+  {
+    id: 10,
+    title: "Film Önerileri 🎬",
+    description: "Birlikte izleyebileceğimiz filmler",
+    type: "movies",
+    content:
+      "Birlikte izleyebileceğimiz filmler için öneriler. Hangi türleri seviyorsun? 💙",
+    completed: false,
+  },
+  {
+    id: 11,
+    title: "Anılar 💭",
+    description: "Birlikte geçirdiğimiz güzel anıları hatırlayalım",
+    type: "memories",
+    content:
+      "Birlikte geçirdiğimiz güzel anıları hatırlayalım. Bir anı seçip paylaşmak ister misin? 💙",
+    completed: false,
+  },
+  {
+    id: 12,
+    title: "Buluşma Planı 📅",
+    description: "İyileştiğinde birlikte yapabileceğimiz aktiviteler",
+    type: "meeting",
+    content:
+      "Buluşamadığımız bu günlerde, birlikte plan yapalım. İyileştiğinde yapabileceğimiz aktiviteleri seçelim 💙",
+    completed: false,
+  },
+  {
+    id: 13,
     title: "Sürpriz Mesaj 🎁",
     description: "Son adımda özel bir sürpriz seni bekliyor!",
     type: "surprise",
@@ -96,7 +150,6 @@ function App() {
     return {
       currentStep: currentStepIndex + 1,
       totalSteps: steps.length,
-      // Tüm adımlar tamamlandıysa %100 göster
       completedSteps: allCompleted ? steps.length : completedSteps,
     };
   }, [steps, currentStepIndex]);
@@ -113,11 +166,9 @@ function App() {
       return newSteps;
     });
 
-    // Sonraki step'e geç (eğer son step değilse)
     if (currentIndex < steps.length - 1) {
       setTimeout(() => {
         setCurrentStepIndex((prev) => {
-          // Eğer prev hala currentIndex ise, bir sonraki step'e geç
           if (prev === currentIndex) {
             return prev + 1;
           }
@@ -137,7 +188,6 @@ function App() {
     [steps]
   );
 
-  // Completion message gösterildiğinde konfetiler ekle
   useEffect(() => {
     if (allCompleted) {
       const confettiArray = Array.from({ length: 50 }, (_, i) => ({
@@ -156,7 +206,6 @@ function App() {
     setCountdownCompleted(true);
   }, []);
 
-
   const handleSurpriseClick = useCallback(() => {
     setShowSurprisePopup(true);
   }, []);
@@ -164,6 +213,23 @@ function App() {
   const handleCloseSurprisePopup = useCallback(() => {
     setShowSurprisePopup(false);
   }, []);
+
+  const handleSkipCurrentStep = useCallback(() => {
+    const currentIndex = currentStepIndex;
+
+    setSteps((prevSteps) => {
+      const newSteps = [...prevSteps];
+      newSteps[currentIndex] = {
+        ...newSteps[currentIndex],
+        completed: true,
+      };
+      return newSteps;
+    });
+
+    if (currentIndex < steps.length - 1) {
+      setCurrentStepIndex(currentIndex + 1);
+    }
+  }, [currentStepIndex, steps.length]);
 
   if (!countdownCompleted) {
     return (
@@ -180,6 +246,16 @@ function App() {
     <div className={styles.container}>
       <div className={styles.card}>
         <h1 className={styles.title}>Yağmur'un Şifası 💙</h1>
+        {!allCompleted && (
+          <button
+            className={styles.skipButton}
+            onClick={handleSkipCurrentStep}
+            type="button"
+            title="Bu adımı atla (Test için)"
+          >
+            ⏭️ Adımı Atla
+          </button>
+        )}
         {!allCompleted && <ProgressBar progress={progress} />}
         {!allCompleted ? (
           <StepComponent step={currentStep} onComplete={handleStepComplete} />
@@ -208,12 +284,12 @@ function App() {
               <button
                 className={styles.surpriseButton}
                 onClick={handleSurpriseClick}
+                type="button"
               >
                 Sürpriz 🎁
               </button>
             </div>
 
-            {/* Sürpriz Popup */}
             {showSurprisePopup && (
               <div
                 className={styles.surprisePopupOverlay}
@@ -226,6 +302,7 @@ function App() {
                   <button
                     className={styles.closePopupButton}
                     onClick={handleCloseSurprisePopup}
+                    type="button"
                   >
                     ✕
                   </button>
