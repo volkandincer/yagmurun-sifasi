@@ -3,38 +3,25 @@ import { GameProps } from "../../interfaces/GameProps.interface";
 import { SARCASTIC_MESSAGES } from "../../interfaces/SarcasticMessage.interface";
 import styles from "../../styles/PuzzleStep.module.css";
 
-interface ImageTile {
+interface PlaceTile {
   id: number;
-  imageUrl: string;
+  placeName: string;
   matched: boolean;
   flipped: boolean;
-  isBonus?: boolean;
 }
 
-// 3x3 grid için 4 çift (8 kart) + 1 bonus kart = 9 kart
-const CAR_IMAGES = [
-  "https://www.shutterstock.com/image-photo/seattle-washington-usa-march-31-600nw-2283283721.jpg",
-  "https://www.shutterstock.com/image-photo/kharkiv-ukraine-july-2021-bmw-600nw-2028637640.jpg",
-  "https://cdn.motor1.com/images/mgl/m6Pjq/s1/4x3/2019-bmw-3-series.webp",
-  "https://cdn.motor1.com/images/mgl/Lwbwj/s1/1x1/bmw-3-series-special-edition.webp",
-];
+// Mekanlar: Salepepe, GG Pizza, Paitan, Kaktüsçü (her biri 2'şer adet = 8 kart)
+const PLACES = ["Salepepe", "GG Pizza", "Paitan", "Kaktüsçü"];
 
-const BONUS_IMAGE = "🎵"; // Bonus kart için emoji
-const YOUTUBE_VIDEO_ID = "NF09k1LU1wA"; // Barış Manço - Nane Limon Kabuğu
-const YOUTUBE_EMBED_URL = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0`;
-
-const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
-  const [tiles, setTiles] = useState<ImageTile[]>(() => {
-    const imagePairs = [...CAR_IMAGES, ...CAR_IMAGES];
-    // Bonus kartı ekle
-    const allTiles = [...imagePairs, BONUS_IMAGE];
-    const shuffled = allTiles.sort(() => Math.random() - 0.5);
-    return shuffled.map((imageUrl, index) => ({
+const PuzzleStep = memo(({ onComplete }: GameProps) => {
+  const [tiles, setTiles] = useState<PlaceTile[]>(() => {
+    const placePairs = [...PLACES, ...PLACES];
+    const shuffled = placePairs.sort(() => Math.random() - 0.5);
+    return shuffled.map((placeName, index) => ({
       id: index,
-      imageUrl,
+      placeName,
       matched: false,
       flipped: false,
-      isBonus: imageUrl === BONUS_IMAGE,
     }));
   });
 
@@ -45,140 +32,121 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
   const [toastType, setToastType] = useState<"error" | "success" | "info">(
     "error"
   );
-  const [showYouTube, setShowYouTube] = useState<boolean>(false);
-  const [showNextStepPopup, setShowNextStepPopup] = useState<boolean>(false);
-  const [showClickHint, setShowClickHint] = useState<boolean>(false);
 
   const handleTileClick = useCallback(
     (tileId: number) => {
       const tile = tiles[tileId];
 
-      // Bonus karta tıklandıysa ve tüm eşleşmeler tamamlandıysa
-      if (tile.isBonus) {
-        if (matches === CAR_IMAGES.length && !tile.flipped) {
-          setTiles((prev) =>
-            prev.map((t) => (t.id === tileId ? { ...t, flipped: true } : t))
-          );
-          // Tıklama ipucunu kapat
-          setShowClickHint(false);
-          // YouTube iframe'ini göster
-          setShowYouTube(true);
-          return;
-        } else if (matches < CAR_IMAGES.length) {
-          setToastMessage("Önce tüm eşleşmeleri tamamla! 🎯");
-          setToastType("info");
-          setTimeout(() => {
-            setToastMessage("");
-          }, 4000);
-          return;
-        }
-      }
-
-      if (
-        tile.matched ||
-        tile.flipped ||
-        selectedTiles.length >= 2 ||
-        tile.isBonus
-      ) {
+      if (tile.matched || tile.flipped || selectedTiles.length >= 2) {
         return;
       }
 
-      setTiles((prev) =>
-        prev.map((t) => (t.id === tileId ? { ...t, flipped: true } : t))
-      );
+      setTiles((prev) => {
+        const updatedTiles = prev.map((t) =>
+          t.id === tileId ? { ...t, flipped: true } : t
+        );
+        const newSelected = [...selectedTiles, tileId];
 
-      const newSelected = [...selectedTiles, tileId];
-      setSelectedTiles(newSelected);
+        if (newSelected.length === 2) {
+          const [firstId, secondId] = newSelected;
+          const firstTile = updatedTiles.find((t) => t.id === firstId);
+          const secondTile = updatedTiles.find((t) => t.id === secondId);
 
-      if (newSelected.length === 2) {
-        const [firstId, secondId] = newSelected;
-        const firstTile = tiles[firstId];
-        const secondTile = tiles[secondId];
-
-        if (
-          firstTile.imageUrl === secondTile.imageUrl &&
-          !firstTile.isBonus &&
-          !secondTile.isBonus
-        ) {
-          setTiles((prev) =>
-            prev.map((t) =>
-              t.id === firstId || t.id === secondId
-                ? { ...t, matched: true, flipped: true }
-                : t
-            )
-          );
-          setMatches((prev) => {
-            const newMatches = prev + 1;
-            if (newMatches === CAR_IMAGES.length) {
-              // Son eşleşme - özel mesaj göster ve tıklama ipucunu göster
-              setToastMessage(
-                "Biraz daha iyisin bence :D Şimdi son karta tıkla! 🎵"
+          if (
+            firstTile &&
+            secondTile &&
+            firstTile.placeName === secondTile.placeName
+          ) {
+            // Doğru eşleşme - state'i güncelle
+            setTimeout(() => {
+              setTiles((currentTiles) =>
+                currentTiles.map((t) =>
+                  t.id === firstId || t.id === secondId
+                    ? { ...t, matched: true, flipped: true }
+                    : t
+                )
               );
-              setToastType("success");
-              setTimeout(() => {
-                setToastMessage("");
-              }, 4500);
-              // Bonus kart için tıklama ipucunu göster
-              setShowClickHint(true);
-            }
-            return newMatches;
-          });
-          setSelectedTiles([]);
+              setMatches((prev) => {
+                const newMatches = prev + 1;
+                if (newMatches === PLACES.length) {
+                  // Tüm eşleşmeler tamamlandı
+                  setToastMessage("Harika! Tüm mekanları eşleştirdin! 🎉");
+                  setToastType("success");
+                  setTimeout(() => {
+                    setToastMessage("");
+                    onComplete();
+                  }, 2000);
+                } else {
+                  setToastMessage("Doğru eşleşme! 🎯");
+                  setToastType("success");
+                  setTimeout(() => {
+                    setToastMessage("");
+                  }, 2000);
+                }
+                return newMatches;
+              });
+              setSelectedTiles([]);
+            }, 100);
+          } else {
+            // Yanlış eşleşme - toast mesaj göster ve kartları karıştır
+            const newWrongAttempts = wrongAttempts + 1;
+            setWrongAttempts(newWrongAttempts);
+
+            const randomMessage =
+              SARCASTIC_MESSAGES[
+                Math.floor(Math.random() * SARCASTIC_MESSAGES.length)
+              ];
+            setToastMessage(randomMessage);
+            setToastType("error");
+
+            setTimeout(() => {
+              setTiles((currentTiles) => {
+                // Önce yanlış seçilen kartları kapat
+                const closedTiles = currentTiles.map((t) =>
+                  t.id === firstId || t.id === secondId
+                    ? { ...t, flipped: false }
+                    : t
+                );
+
+                // Eşleşmiş kartları ayır
+                const matchedTiles = closedTiles.filter((t) => t.matched);
+                const unmatchedTiles = closedTiles.filter((t) => !t.matched);
+
+                // Eşleşmemiş kartları karıştır (ID'leri koru, sadece array içindeki sıralamayı değiştir)
+                const shuffledUnmatched = [...unmatchedTiles].sort(
+                  () => Math.random() - 0.5
+                );
+
+                // Eşleşmiş kartları başa, karıştırılmış eşleşmemiş kartları sona ekle
+                return [...matchedTiles, ...shuffledUnmatched];
+              });
+              setSelectedTiles([]);
+            }, 1500);
+
+            setTimeout(() => {
+              setToastMessage("");
+            }, 4000);
+          }
+
+          setSelectedTiles(newSelected);
         } else {
-          // Yanlış eşleşme - toast mesaj göster
-          const newWrongAttempts = wrongAttempts + 1;
-          setWrongAttempts(newWrongAttempts);
-
-          const randomMessage =
-            SARCASTIC_MESSAGES[
-              Math.floor(Math.random() * SARCASTIC_MESSAGES.length)
-            ];
-          setToastMessage(randomMessage);
-          setToastType("error");
-
-          setTimeout(() => {
-            setTiles((prev) =>
-              prev.map((t) =>
-                t.id === firstId || t.id === secondId
-                  ? { ...t, flipped: false }
-                  : t
-              )
-            );
-            setSelectedTiles([]);
-          }, 1500);
-
-          setTimeout(() => {
-            setToastMessage("");
-          }, 4000);
+          setSelectedTiles(newSelected);
         }
-      }
+
+        return updatedTiles;
+      });
     },
-    [tiles, selectedTiles, wrongAttempts, matches, onComplete]
+    [selectedTiles, wrongAttempts, onComplete]
   );
 
-  // 3x3 grid için sabit boyut
-  const gridSize = 3;
-
-  const handleCloseYouTube = useCallback(() => {
-    setShowYouTube(false);
-    setTimeout(() => {
-      setShowNextStepPopup(true);
-    }, 300);
-  }, []);
-
-  const handleNextStep = useCallback(() => {
-    setShowNextStepPopup(false);
-    setTimeout(() => {
-      onComplete();
-    }, 300);
-  }, [onComplete]);
+  // 2x4 grid için (8 kart)
+  const gridSize = 4;
 
   return (
     <div className={styles.puzzleContainer}>
-      <p className={styles.puzzleDescription}>{step.content}</p>
       <div className={styles.statsContainer}>
         <div className={styles.matchCounter}>
-          Eşleşme: {matches} / {CAR_IMAGES.length}
+          Eşleşme: {matches} / {PLACES.length}
         </div>
         {wrongAttempts > 0 && (
           <div className={styles.wrongCounter}>
@@ -207,84 +175,22 @@ const PuzzleStep = memo(({ step, onComplete }: GameProps) => {
         style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
       >
         {tiles.map((tile) => (
-          <div key={tile.id} className={styles.tileWrapper}>
-            <button
-              className={`${styles.tile} ${
-                tile.flipped ? styles.flipped : ""
-              } ${tile.matched ? styles.matched : ""}`}
-              onClick={() => handleTileClick(tile.id)}
-              disabled={
-                tile.isBonus
-                  ? matches < CAR_IMAGES.length || tile.flipped
-                  : tile.matched || selectedTiles.length >= 2
-              }
-            >
-              {!tile.flipped && !tile.matched ? (
-                <span className={styles.questionMark}>?</span>
-              ) : tile.isBonus && tile.flipped ? (
-                <span className={styles.bonusEmoji}>🎵</span>
-              ) : (
-                <img
-                  src={tile.imageUrl}
-                  alt="BMW"
-                  className={styles.tileImage}
-                  loading="lazy"
-                />
-              )}
-            </button>
-            {showClickHint &&
-              tile.isBonus &&
-              !tile.flipped &&
-              matches === CAR_IMAGES.length && (
-                <div className={styles.clickHint}>
-                  <div className={styles.clickHintArrow}>👇</div>
-                  <div className={styles.clickHintText}>sürprizzzz!!!!</div>
-                </div>
-              )}
-          </div>
+          <button
+            key={tile.id}
+            className={`${styles.tile} ${tile.flipped ? styles.flipped : ""} ${
+              tile.matched ? styles.matched : ""
+            }`}
+            onClick={() => handleTileClick(tile.id)}
+            disabled={tile.matched || selectedTiles.length >= 2}
+          >
+            {!tile.flipped && !tile.matched ? (
+              <span className={styles.questionMark}>?</span>
+            ) : (
+              <span className={styles.placeName}>{tile.placeName}</span>
+            )}
+          </button>
         ))}
       </div>
-
-      {/* YouTube Modal */}
-      {showYouTube && (
-        <div className={styles.youtubeOverlay} onClick={handleCloseYouTube}>
-          <div
-            className={styles.youtubeModal}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button className={styles.closeButton} onClick={handleCloseYouTube}>
-              ✕
-            </button>
-            <div className={styles.youtubeContainer}>
-              <iframe
-                className={styles.youtubeIframe}
-                src={YOUTUBE_EMBED_URL}
-                title="Barış Manço - Nane Limon Kabuğu"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Next Step Popup */}
-      {showNextStepPopup && (
-        <div className={styles.popupOverlay} onClick={handleNextStep}>
-          <div
-            className={styles.popupContent}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <p className={styles.popupMessage}>
-              Nane Limon içilmeli ki kendini iyi hissedebilesin. 🚀
-            </p>
-            <button className={styles.popupButton} onClick={handleNextStep}>
-              sıkılmadın dimi →
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 });

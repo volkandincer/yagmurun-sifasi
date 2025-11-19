@@ -17,7 +17,7 @@ const SurpriseStep = memo(({ step, onComplete }: GameProps) => {
   }, []);
 
   const handleComplete = useCallback(() => {
-    onComplete();
+      onComplete();
   }, [onComplete]);
 
   return (

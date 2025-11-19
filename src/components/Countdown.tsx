@@ -5,16 +5,16 @@ import styles from "../styles/Countdown.module.css";
 const COUNTDOWN_DURATION = 1;
 
 const MOTIVATION_TEXTS: readonly string[] = [
-  "Sen çok güçlüsün! 💪",
-  "Her gün daha iyi oluyorsun 🌟",
-  "Seni seven herkes yanında 💙",
   "İyileşme yolundasın ✨",
+  "Her gün daha güçlü oluyorsun 💪",
+  "Seni seven herkes yanında 💙",
   "Pozitif enerji seninle 🌈",
-  "Güçlü kal, Yağmur! 💪",
-  "Her nefes seni daha güçlü yapıyor 🌸",
-  "Sen harika birisin! 🌟",
+  "Güçlü kal, Yağmur! 🌟",
+  "Her nefes seni iyileştiriyor 🌸",
+  "Sen harika birisin! 💫",
   "Umudun her zaman var 🌺",
-  "Senin için dualar ediliyor 🙏",
+  "Yakında birlikte olacağız 💕",
+  "İyileşince neler yapacağız! 🎉",
 ] as const;
 
 const Countdown = memo(({ onComplete }: CountdownProps) => {
@@ -52,10 +52,16 @@ const Countdown = memo(({ onComplete }: CountdownProps) => {
     return (
       <div className={styles.container}>
         <div className={styles.readyMessage}>
+          <div className={styles.readyIcon}>💙</div>
+          <h2 className={styles.readyTitle}>
+            Çocukları yanına al merak ederler :)
+          </h2>
           <h2 className={styles.readyTitle}>Hazır mısın?</h2>
-          <p className={styles.readySubtitle}>Başlıyoruz!</p>
+          <p className={styles.readySubtitle}>
+            İyileşme yolculuğuna başlıyoruz. Umarım keyif alırsın.
+          </p>
           <button className={styles.startButton} onClick={handleStart}>
-            Hazırsan başlıyoruz 🚀
+            Başlıyoruz... ✨
           </button>
         </div>
       </div>

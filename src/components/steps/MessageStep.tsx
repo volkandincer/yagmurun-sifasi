@@ -53,10 +53,7 @@ const MessageStep = memo(({ step, onComplete }: GameProps) => {
               onClick={(e) => e.stopPropagation()}
             >
               <p className={styles.popupMessage}>
-                Evet ya da hayır fark etmiyordu ki… Bir sonraki aşamaya
-                geçebiliriz 😄
-                <br />
-                Zorlu bir oyun bu! 💪
+                of sıkılmadık mı aynı casei yaşamaktan
               </p>
               <button className={styles.popupButton} onClick={handlePopupClose}>
                 Devam mı →
@@ -72,7 +69,7 @@ const MessageStep = memo(({ step, onComplete }: GameProps) => {
     <div className={styles.messageContainer}>
       <p className={styles.messageText}>{step.content}</p>
       <button className={styles.continueButton} onClick={handleContinueClick}>
-        Devam Ediyoruzzz →
+        durmak yok yola devam→
       </button>
     </div>
   );

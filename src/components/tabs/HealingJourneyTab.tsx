@@ -1,82 +1,81 @@
-import { useState, useCallback, useMemo, useEffect, memo } from 'react';
-import { Step } from '../../interfaces/Step.interface';
-import { StepProgress } from '../../interfaces/Step.interface';
-import ProgressBar from '../ProgressBar';
-import StepComponent from '../StepComponent';
-import Countdown from '../Countdown';
-import styles from '../../styles/HealingJourneyTab.module.css';
+import { useState, useCallback, useMemo, useEffect, memo } from "react";
+import { Step } from "../../interfaces/Step.interface";
+import { StepProgress } from "../../interfaces/Step.interface";
+import ProgressBar from "../ProgressBar";
+import StepComponent from "../StepComponent";
+import Countdown from "../Countdown";
+import styles from "../../styles/HealingJourneyTab.module.css";
 
 const CONFETTI_COLORS = [
-  '#667eea',
-  '#764ba2',
-  '#f093fb',
-  '#4facfe',
-  '#43e97b',
-  '#fa709a',
+  "#667eea",
+  "#764ba2",
+  "#f093fb",
+  "#4facfe",
+  "#43e97b",
+  "#fa709a",
 ];
 
 const INITIAL_STEPS: Step[] = [
   {
     id: 1,
-    title: 'Hoş Geldin Yağmur! 💙',
-    description: 'İyileşmeni dört gözle bekliyoruzzzzz',
-    type: 'message',
-    content:
-      'Biraz eğlenmeni istedim umarım keyfin yerine gelir. Her adımda karşına çıkacak sürprizlere gülümse...',
+    title: "Hoş Geldin Yağmur! 💙",
+    description: "İyileşmeni dört gözle bekliyoruzzzzz",
+    type: "message",
+    content: "Yağmur hanım iyileşiyor ",
     completed: false,
   },
   {
     id: 2,
-    title: 'Pozitif Enerji Toplama 🌟',
-    description: 'Bu butona bas ve pozitif enerji topla!',
-    type: 'game',
+    title: "Pozitif Enerji Toplama 🌟",
+    description: "Bu butona bas ve pozitif enerji topla!",
+    type: "game",
     content:
-      'Aşağıdaki butona basıp ve pozitif enerji topluyoruz.! Her tıklamada daha güçlü olacaksın!',
+      "Aşağıdaki butona basıp ve pozitif enerji topluyoruz.! Her tıklamada daha güçlü olacaksın!",
     completed: false,
   },
   {
     id: 3,
-    title: 'Şifa Mesajları 💐',
-    description: 'Senin için özel mesajlar',
-    type: 'message',
+    title: "Şifa Mesajları 💐",
+    description: "Senin için özel mesajlar",
+    type: "message",
     content:
-      'Çok güçlüsün Yağmur! Bu zorlu günleri atlatacak ve daha güçlü olacaksın. Seni seven herkes yanında!',
+      "Çok güçlüsün Yağmur! Bu zorlu günleri atlatacak ve daha güçlü olacaksın. Seni seven herkes yanında!",
     completed: false,
   },
   {
     id: 4,
-    title: 'BMW 3.20 leri Bulmaca 🎨',
-    description: 'BMW 3.20 leri eşleştir ve puan kazan!',
-    type: 'puzzle',
+    title: "BMW 3.20 leri Bulmaca 🎨",
+    description: "BMW 3.20 leri eşleştir ve puan kazan!",
+    type: "puzzle",
     content:
-      'Renkleri eşleştirerek puan kazan! Her eşleşme seni bir adım daha ileri götürecek.',
+      "Renkleri eşleştirerek puan kazan! Her eşleşme seni bir adım daha ileri götürecek.",
     completed: false,
   },
   {
     id: 5,
-    title: 'İyileşmek için yapman gerekenler 🤒',
-    description: 'mızmızlanmak yok :)',
-    type: 'influenza',
+    title: "İyileşmek için yapman gerekenler 🤒",
+    description: "mızmızlanmak yok :)",
+    type: "influenza",
     content:
-      'Influenza olan birinin yapması gerekenler. Önce bir video izleyelim, sonra önerilere bakalım!',
+      "Influenza olan birinin yapması gerekenler. Önce bir video izleyelim, sonra önerilere bakalım!",
     completed: false,
   },
   {
     id: 6,
-    title: 'Kahve ve Müzik Zamanı ☕🎵',
-    description: 'Kahveni yap ve özel playlist\'i dinle',
-    type: 'spotify',
+    title: "Kahve ve Müzik Zamanı ☕🎵",
+    description: "Kahveni yap ve özel playlist'i dinle",
+    type: "spotify",
     content:
-      'Kahveni yapıp bu özel şarkıları dinleyerek pinekliyorsun. Bahane istemiyoruzzzz. Bu şarkılar senin için seçildi!',
+      "Kahveni yapıp bu özel şarkıları dinleyerek pinekliyorsun. Bahane istemiyoruzzzz. Bu şarkılar senin için seçildi!",
     completed: false,
   },
   {
     id: 7,
-    title: 'Sürpriz Mesaj 🎁',
-    description: 'Son adımda özel bir sürpriz seni bekliyor!',
-    type: 'surprise',
+    title: "Sürpriz Mesaj 🎁",
+    description: "Son adımda özel bir sürpriz seni bekliyor!",
+    type: "surprise",
     content:
-      'Sen harika birisin bazen gıcık olsan da... Hızlıca iyileşmen dileğiyle! 💙',
+      "Sen harika birisin bazen gıcık olsan da... Hızlıca iyileşmen dileğiyle! 💙",
     completed: false,
   },
 ];
@@ -239,7 +238,6 @@ const HealingJourneyTab = memo(() => {
   );
 });
 
-HealingJourneyTab.displayName = 'HealingJourneyTab';
+HealingJourneyTab.displayName = "HealingJourneyTab";
 
 export default HealingJourneyTab;
-

@@ -15,6 +15,9 @@ const CONFETTI_COLORS = [
   "#fa709a",
 ];
 
+const SPOTIFY_PLAYLIST_URL =
+  "https://open.spotify.com/playlist/1dCuwsILd6q5vB9Mb32UNO?si=b4fd2824c0614162&pt=0e79c72f8ee647749eeae09b70c04cfd";
+
 const INITIAL_STEPS: Step[] = [
   {
     id: 1,
@@ -22,115 +25,52 @@ const INITIAL_STEPS: Step[] = [
     description: "İyileşmeni dört gözle bekliyoruzzzzz",
     type: "message",
     content:
-      "Biraz eğlenmeni istedim umarım keyfin yerine gelir. Her adımda karşına çıkacak sürprizlere gülümse...",
+      "umarım keyfin yerine gelir. Her adımda karşına çıkacak küçük sürprizlerin yüzünde bir gülümseme bırakması dileğiyle…",
     completed: false,
   },
   {
     id: 2,
-    title: "Pozitif Enerji Toplama 🌟",
-    description: "Bu butona bas ve pozitif enerji topla!",
-    type: "game",
-    content:
-      "Aşağıdaki butona basıp ve pozitif enerji topluyoruz.! Her tıklamada daha güçlü olacaksın!",
-    completed: false,
-  },
-  {
-    id: 3,
-    title: "Şifa Mesajları 💐",
-    description: "Senin için özel mesajlar",
-    type: "message",
-    content:
-      "Çok güçlüsün Yağmur! Bu zorlu günleri atlatacak ve daha güçlü olacaksın. Seni seven herkes yanında!",
-    completed: false,
-  },
-  {
-    id: 4,
-    title: "BMW 3.20 leri Bulmaca 🎨",
-    description: "BMW 3.20 leri eşleştir ve puan kazan!",
-    type: "puzzle",
-    content:
-      "Renkleri eşleştirerek puan kazan! Her eşleşme seni bir adım daha ileri götürecek.",
-    completed: false,
-  },
-  {
-    id: 5,
-    title: "İyileşmek için yapman gerekenler 🤒",
-    description: "mızmızlanmak yok :)",
-    type: "influenza",
-    content:
-      "Influenza olan birinin yapması gerekenler. Önce bir video izleyelim, sonra önerilere bakalım!",
-    completed: false,
-  },
-  {
-    id: 6,
     title: "İyileşme Takibi 📊",
     description: "Bugün nasıl hissediyorsun?",
     type: "recovery",
     content:
-      "İyileşme sürecini takip edelim. Bugün nasıl hissediyorsun? Koku, tat ve öksürük durumunu paylaş 💙",
+      "İyileşme sürecini takip edelim. Bugün nasıl hissediyorsun? Öksürük, halsizlik, hapşırma, koku ve tat durumunu paylaş 💙",
     completed: false,
   },
   {
-    id: 7,
+    id: 3,
+    title: "Film & Dizi Önerileri 🎬📺",
+    description: "Zamanında izlediklerim... belki izlememişsindir umuduyla :D",
+    type: "movies",
+    content:
+      "Durumunu öğrendik, şimdi iyileşme sürecinde izleyebileceğin özel önerilerim var! Birlikte izleyebileceğimiz film ve diziler seni bekliyor 💙",
+    completed: false,
+  },
+  {
+    id: 4,
+    title: "Sinemaya Gidelim 🎬",
+    description: "Birlikte film izleyelim",
+    type: "cinema",
+    content:
+      "Sinemaya gidecektin ama hastalandığın için gidemedin. Hala gitmediysen, birlikte gidebiliriz! Film ve seans seçimi yapalım 💙",
+    completed: false,
+  },
+  {
+    id: 5,
+    title: "Gidemediğimiz yerlere hala gidemiyoruz 🎨",
+    description: "O yüzden mekanları eşleştiriyoruz laksfşalsfş",
+    type: "puzzle",
+    content:
+      "Gidemediğimiz yerlere hala gidemiyoruz. Mekanları eşleştir! Her eşleşme seni bir adım daha ileri götürecek.",
+    completed: false,
+  },
+  {
+    id: 6,
     title: "Kahve ve Müzik Zamanı ☕🎵",
     description: "Kahveni yap ve özel playlist'i dinle",
     type: "spotify",
     content:
       "Kahveni yapıp bu özel şarkıları dinleyerek pinekliyorsun. Bahane istemiyoruzzzz. Bu şarkılar senin için seçildi!",
-    completed: false,
-  },
-  {
-    id: 8,
-    title: "Günlük Sohbet 💬",
-    description: "Birlikte sohbet edelim",
-    type: "chat",
-    content:
-      "Birlikte sohbet edelim. Nasılsın, neler hissediyorsun? Seni dinlemek istiyorum 💙",
-    completed: false,
-  },
-  {
-    id: 9,
-    title: "Sesli Mesaj 🎤",
-    description: "Öksürüğün varsa sesli mesaj gönder",
-    type: "voice",
-    content:
-      "Öksürüğün varsa yazmak zor olabilir. Burada sesli mesaj gönderebilirsin 💙",
-    completed: false,
-  },
-  {
-    id: 10,
-    title: "Film Önerileri 🎬",
-    description: "Birlikte izleyebileceğimiz filmler",
-    type: "movies",
-    content:
-      "Birlikte izleyebileceğimiz filmler için öneriler. Hangi türleri seviyorsun? 💙",
-    completed: false,
-  },
-  {
-    id: 11,
-    title: "Anılar 💭",
-    description: "Birlikte geçirdiğimiz güzel anıları hatırlayalım",
-    type: "memories",
-    content:
-      "Birlikte geçirdiğimiz güzel anıları hatırlayalım. Bir anı seçip paylaşmak ister misin? 💙",
-    completed: false,
-  },
-  {
-    id: 12,
-    title: "Buluşma Planı 📅",
-    description: "İyileştiğinde birlikte yapabileceğimiz aktiviteler",
-    type: "meeting",
-    content:
-      "Buluşamadığımız bu günlerde, birlikte plan yapalım. İyileştiğinde yapabileceğimiz aktiviteleri seçelim 💙",
-    completed: false,
-  },
-  {
-    id: 13,
-    title: "Sürpriz Mesaj 🎁",
-    description: "Son adımda özel bir sürpriz seni bekliyor!",
-    type: "surprise",
-    content:
-      "Sen harika birisin bazen gıcık olsan da... Hızlıca iyileşmen dileğiyle! 💙",
     completed: false,
   },
 ];
@@ -142,7 +82,6 @@ function App() {
   const [confetti, setConfetti] = useState<
     Array<{ id: number; x: number; color: string }>
   >([]);
-  const [showSurprisePopup, setShowSurprisePopup] = useState<boolean>(false);
 
   const progress: StepProgress = useMemo(() => {
     const completedSteps = steps.filter((step) => step.completed).length;
@@ -206,14 +145,6 @@ function App() {
     setCountdownCompleted(true);
   }, []);
 
-  const handleSurpriseClick = useCallback(() => {
-    setShowSurprisePopup(true);
-  }, []);
-
-  const handleCloseSurprisePopup = useCallback(() => {
-    setShowSurprisePopup(false);
-  }, []);
-
   const handleSkipCurrentStep = useCallback(() => {
     const currentIndex = currentStepIndex;
 
@@ -235,7 +166,7 @@ function App() {
     return (
       <div className={styles.container}>
         <div className={styles.card}>
-          <h1 className={styles.title}>Yağmur'un Şifası 💙</h1>
+          <h1 className={styles.title}>bakalım yüzde kaç daha iyisin...</h1>
           <Countdown onComplete={handleCountdownComplete} />
         </div>
       </div>
@@ -276,49 +207,24 @@ function App() {
             </div>
             <div className={styles.completionMessage}>
               <ProgressBar progress={progress} />
-              <h2>🎉 Bomba gibiyiz dimiiiii 🎉</h2>
-              <p>
-                Tüm adımları tamamladığın için tebrikler! Sen gerçekten harika
-                birisin!
+              <div className={styles.completionIcon}>✨</div>
+              <h2>
+                Bir ilerleme daha kaydettin! 😄🎉 Kendini tebrik edebilirsin. 🎉
+              </h2>
+              <p className={styles.completionMainText}>
+                Tüm adımları tamamladığın için tebrikler! Artık tamamen
+                iyileştin ve birlikte harika şeyler yapmaya hazırız.
               </p>
-              <button
-                className={styles.surpriseButton}
-                onClick={handleSurpriseClick}
-                type="button"
+              <a
+                href={SPOTIFY_PLAYLIST_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.spotifyButton}
               >
-                Sürpriz 🎁
-              </button>
+                <span className={styles.spotifyIcon}>🎵</span>
+                Spotify'da Aç
+              </a>
             </div>
-
-            {showSurprisePopup && (
-              <div
-                className={styles.surprisePopupOverlay}
-                onClick={handleCloseSurprisePopup}
-              >
-                <div
-                  className={styles.surprisePopupContent}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    className={styles.closePopupButton}
-                    onClick={handleCloseSurprisePopup}
-                    type="button"
-                  >
-                    ✕
-                  </button>
-                  <div className={styles.surpriseImageContainer}>
-                    <img
-                      src="https://www.gather.com.tr/wp-content/uploads/2025/03/Taylot-Nedir.jpg"
-                      alt="Sürpriz"
-                      className={styles.surpriseImage}
-                    />
-                    <p className={styles.surpriseImageText}>
-                      Severek içilen bir şey değil ki zaten
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
           </>
         )}
       </div>

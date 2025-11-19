@@ -4,11 +4,25 @@
   width: 100%;
 }
 
+.puzzleTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 15px;
+  line-height: 1.3;
+}
+
 .puzzleDescription {
   font-size: 1.1rem;
-  color: #666;
-  margin-bottom: 20px;
-  line-height: 1.6;
+  color: #555;
+  margin-bottom: 30px;
+  line-height: 1.7;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .statsContainer {
@@ -16,7 +30,7 @@
   justify-content: center;
   align-items: center;
   gap: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   flex-wrap: wrap;
 }
 
@@ -24,6 +38,10 @@
   font-size: 1.2rem;
   font-weight: 600;
   color: #667eea;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 2px solid rgba(102, 126, 234, 0.2);
 }
 
 .wrongCounter {
@@ -31,8 +49,9 @@
   font-weight: 500;
   color: #ff6b6b;
   background: rgba(255, 107, 107, 0.1);
-  padding: 5px 15px;
-  border-radius: 15px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 2px solid rgba(255, 107, 107, 0.2);
 }
 
 /* Toast Notification */
@@ -96,10 +115,10 @@
 
 .puzzleGrid {
   display: grid;
-  gap: 10px;
-  max-width: 400px;
+  gap: 15px;
+  max-width: 500px;
   margin: 0 auto;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   position: relative;
 }
 
@@ -111,16 +130,17 @@
 
 .tile {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1;
   border: none;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #e0e0e0 0%, #bdbdbd 100%);
+  border-radius: 15px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
+  border: 2px solid rgba(102, 126, 234, 0.2);
   cursor: pointer;
   font-size: 1.5rem;
   font-weight: 700;
   color: #666;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
   position: relative;
   overflow: hidden;
   display: flex;
@@ -137,32 +157,46 @@
 }
 
 .questionMark {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  color: #666;
+  color: #999;
+  opacity: 0.7;
 }
 
-.bonusEmoji {
-  font-size: 3rem;
+.placeName {
+  font-size: 1rem;
+  font-weight: 700;
+  color: inherit;
+  text-align: center;
+  line-height: 1.3;
+  padding: 5px;
 }
 
 .tile:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  border-color: rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(240, 147, 251, 0.15) 100%);
 }
 
 .tile:active:not(:disabled) {
-  transform: translateY(-1px);
+  transform: translateY(-2px) scale(0.98);
 }
 
 .tile.flipped {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  border-color: #667eea;
   color: white;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
   animation: flip 0.3s ease;
 }
 
 .tile.matched {
-  opacity: 0.7;
+  background: linear-gradient(135deg, rgba(67, 233, 123, 0.2) 0%, rgba(76, 175, 80, 0.2) 100%);
+  border-color: rgba(67, 233, 123, 0.5);
+  color: #43e97b;
   cursor: not-allowed;
+  opacity: 0.8;
   animation: match 0.5s ease;
 }
 
@@ -397,10 +431,20 @@
 }
 
 @media (max-width: 768px) {
+  .puzzleTitle {
+    font-size: 1.5rem;
+  }
+
+  .puzzleDescription {
+    font-size: 1rem;
+    padding: 0 10px;
+  }
+
   .puzzleGrid {
-    max-width: 300px;
-    gap: 8px;
-    grid-template-columns: repeat(3, 1fr) !important;
+    max-width: 100%;
+    gap: 12px;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 0 10px;
   }
 
   .clickHint {

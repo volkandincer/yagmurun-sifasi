@@ -13,6 +13,7 @@ import RecoveryStep from './steps/RecoveryStep';
 import MoviesStep from './steps/MoviesStep';
 import MemoriesStep from './steps/MemoriesStep';
 import VoiceStep from './steps/VoiceStep';
+import CinemaStep from './steps/CinemaStep';
 import styles from '../styles/StepComponent.module.css';
 
 interface StepComponentProps {
@@ -52,6 +53,8 @@ const StepComponent = memo(({ step, onComplete }: StepComponentProps) => {
         return <MemoriesStep {...stepProps} />;
       case 'voice':
         return <VoiceStep {...stepProps} />;
+      case 'cinema':
+        return <CinemaStep {...stepProps} />;
       default:
         return <MessageStep {...stepProps} />;
     }
