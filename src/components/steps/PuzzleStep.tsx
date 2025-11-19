@@ -1,7 +1,8 @@
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, memo, useRef } from "react";
 import { GameProps } from "../../interfaces/GameProps.interface";
 import { SARCASTIC_MESSAGES } from "../../interfaces/SarcasticMessage.interface";
 import styles from "../../styles/PuzzleStep.module.css";
+import { savePuzzleResult } from "../../lib/supabase";
 
 interface PlaceTile {
   id: number;
@@ -14,6 +15,8 @@ interface PlaceTile {
 const PLACES = ["Salepepe", "GG Pizza", "Paitan", "Kaktüsçü"];
 
 const PuzzleStep = memo(({ onComplete }: GameProps) => {
+  const startTimeRef = useRef<number>(Date.now());
+
   const [tiles, setTiles] = useState<PlaceTile[]>(() => {
     const placePairs = [...PLACES, ...PLACES];
     const shuffled = placePairs.sort(() => Math.random() - 0.5);
@@ -69,7 +72,14 @@ const PuzzleStep = memo(({ onComplete }: GameProps) => {
               setMatches((prev) => {
                 const newMatches = prev + 1;
                 if (newMatches === PLACES.length) {
-                  // Tüm eşleşmeler tamamlandı
+                  // Tüm eşleşmeler tamamlandı - veriyi kaydet
+                  const completionTime = Date.now() - startTimeRef.current;
+                  savePuzzleResult({
+                    matches: newMatches,
+                    wrong_attempts: wrongAttempts,
+                    completion_time: Math.round(completionTime / 1000), // saniye cinsinden
+                  });
+
                   setToastMessage("Harika! Tüm mekanları eşleştirdin! 🎉");
                   setToastType("success");
                   setTimeout(() => {

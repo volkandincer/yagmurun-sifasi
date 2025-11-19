@@ -1,6 +1,7 @@
 import { memo, useState, useCallback, useMemo } from "react";
 import { GameProps } from "../../interfaces/GameProps.interface";
 import styles from "../../styles/RecoveryStep.module.css";
+import { saveRecoveryData } from "../../lib/supabase";
 
 interface RecoveryStatus {
   smell: number; // 0-100
@@ -104,25 +105,6 @@ const RecoveryStep = memo(({ onComplete }: GameProps) => {
     setStatus((prev) => ({ ...prev, sneeze: value }));
   }, []);
 
-  const handleSubmit = useCallback(() => {
-    setHasSubmitted(true);
-    setShowAnalysis(true);
-  }, []);
-
-  const handleAnalysisConfirm = useCallback(() => {
-    if (analysisConfirmed) {
-      setShowAnalysis(false);
-      onComplete();
-    }
-  }, [analysisConfirmed, onComplete]);
-
-  const handleCheckboxChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setAnalysisConfirmed(e.target.checked);
-    },
-    []
-  );
-
   const overallProgress = useMemo(() => {
     // Koku ve tat iyileşme yüzdesi, diğerleri ters (düşük = iyi)
     const smellProgress = status.smell;
@@ -152,6 +134,36 @@ const RecoveryStep = memo(({ onComplete }: GameProps) => {
       if (value >= 70) return "😊";
       if (value >= 40) return "😐";
       return "😷";
+    },
+    []
+  );
+
+  const handleSubmit = useCallback(() => {
+    setHasSubmitted(true);
+    setShowAnalysis(true);
+  }, []);
+
+  const handleAnalysisConfirm = useCallback(async () => {
+    if (analysisConfirmed) {
+      // Veriyi Supabase'e kaydet
+      const progress = overallProgress;
+      await saveRecoveryData({
+        smell: status.smell,
+        taste: status.taste,
+        cough: status.cough,
+        weakness: status.weakness,
+        sneeze: status.sneeze,
+        overall_progress: progress,
+      });
+
+      setShowAnalysis(false);
+      onComplete();
+    }
+  }, [analysisConfirmed, onComplete, status, overallProgress]);
+
+  const handleCheckboxChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setAnalysisConfirmed(e.target.checked);
     },
     []
   );

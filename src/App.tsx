@@ -1,10 +1,11 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { Step } from "./interfaces/Step.interface";
 import { StepProgress } from "./interfaces/Step.interface";
 import ProgressBar from "./components/ProgressBar";
 import StepComponent from "./components/StepComponent";
 import Countdown from "./components/Countdown";
 import styles from "./styles/App.module.css";
+import { saveUserSession, updateUserSession } from "./lib/supabase";
 
 const CONFETTI_COLORS = [
   "#667eea",
@@ -43,7 +44,7 @@ const INITIAL_STEPS: Step[] = [
     description: "Zamanında izlediklerim... belki izlememişsindir umuduyla :D",
     type: "movies",
     content:
-      "Durumunu öğrendik, şimdi iyileşme sürecinde izleyebileceğin özel önerilerim var! Birlikte izleyebileceğimiz film ve diziler seni bekliyor 💙",
+      "Durumunu öğrendik, şimdi iyileşme sürecinde izleyebileceğin özel önerilerim var! 💙",
     completed: false,
   },
   {
@@ -82,6 +83,7 @@ function App() {
   const [confetti, setConfetti] = useState<
     Array<{ id: number; x: number; color: string }>
   >([]);
+  const sessionIdRef = useRef<string | null>(null);
 
   const progress: StepProgress = useMemo(() => {
     const completedSteps = steps.filter((step) => step.completed).length;
@@ -102,6 +104,15 @@ function App() {
         ...newSteps[currentIndex],
         completed: true,
       };
+
+      // Session'ı güncelle
+      if (sessionIdRef.current) {
+        const completedStepIds = newSteps
+          .filter((step) => step.completed)
+          .map((step) => step.id);
+        updateUserSession(sessionIdRef.current, completedStepIds);
+      }
+
       return newSteps;
     });
 
@@ -141,8 +152,20 @@ function App() {
     }
   }, [allCompleted]);
 
-  const handleCountdownComplete = useCallback(() => {
+  const handleCountdownComplete = useCallback(async () => {
     setCountdownCompleted(true);
+
+    // İlk session'ı oluştur
+    const sessionId = `session-${Date.now()}-${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
+    sessionIdRef.current = sessionId;
+
+    await saveUserSession({
+      session_id: sessionId,
+      completed_steps: [],
+      total_steps: INITIAL_STEPS.length,
+    });
   }, []);
 
   const handleSkipCurrentStep = useCallback(() => {

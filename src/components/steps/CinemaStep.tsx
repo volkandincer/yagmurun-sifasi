@@ -1,6 +1,7 @@
 import { memo, useState, useCallback } from "react";
 import { GameProps } from "../../interfaces/GameProps.interface";
 import styles from "../../styles/CinemaStep.module.css";
+import { saveCinemaSelection } from "../../lib/supabase";
 
 interface Showtime {
   id: string;
@@ -125,9 +126,23 @@ const CinemaStep = memo(({ onComplete }: GameProps) => {
     setShowMessage(true);
   }, []);
 
-  const handleSaveAndContinue = useCallback(() => {
+  const handleSaveAndContinue = useCallback(async () => {
+    if (selectedDate && selectedShowtime) {
+      const dateOption = availableDates.find((d) => d.id === selectedDate);
+      const showtime = SHOWTIMES.find((st) => st.id === selectedShowtime);
+
+      if (dateOption && showtime) {
+        // Veriyi Supabase'e kaydet
+        await saveCinemaSelection({
+          movie_title: MOVIE_INFO.title,
+          selected_date: dateOption.date.toISOString(),
+          selected_time: showtime.time,
+        });
+      }
+    }
+
     onComplete();
-  }, [onComplete]);
+  }, [onComplete, selectedDate, selectedShowtime, availableDates]);
 
   return (
     <div className={styles.container}>
